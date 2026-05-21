@@ -1,11 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import {
-  LayoutDashboard,
-  Users,
-  Handshake,
-  Settings,
-  LogOut,
-} from 'lucide-react';
+import { LayoutDashboard, Users, Handshake, Settings, LogOut, X } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
 const navItems = [
@@ -15,24 +9,39 @@ const navItems = [
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];
 
-export default function Sidebar({ onNavigate }) {
+export default function Sidebar({ onNavigate, onClose }) {
   const { user, logout } = useAuth();
 
   const handleNav = () => onNavigate?.();
 
   return (
     <aside className="flex h-full w-64 flex-col bg-sidebar text-slate-300">
-      <div className="flex h-16 items-center gap-2.5 border-b border-slate-700/50 px-5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white">
-          F
+      <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-700/50 px-5">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white">
+            F
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-white">Future CRM</p>
+            <p className="text-xs text-slate-400">Sales workspace</p>
+          </div>
         </div>
-        <div>
-          <p className="text-sm font-semibold text-white">Future CRM</p>
-          <p className="text-xs text-slate-400">Sales workspace</p>
-        </div>
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-lg p-1.5 text-slate-400 transition-colors duration-150 hover:bg-slate-800 hover:text-white lg:hidden"
+            aria-label="Close menu"
+          >
+            <X size={20} />
+          </button>
+        )}
       </div>
 
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+        <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+          Menu
+        </p>
         {navItems.map(({ to, icon: Icon, label, end }) => (
           <NavLink
             key={to}
@@ -53,7 +62,7 @@ export default function Sidebar({ onNavigate }) {
         ))}
       </nav>
 
-      <div className="border-t border-slate-700/50 p-4">
+      <div className="shrink-0 border-t border-slate-700/50 p-4">
         <div className="mb-3 flex items-center gap-3 px-1">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-700 text-xs font-medium text-white">
             {user?.name?.charAt(0)?.toUpperCase() || 'U'}
