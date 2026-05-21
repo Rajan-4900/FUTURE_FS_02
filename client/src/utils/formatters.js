@@ -16,6 +16,24 @@ export const formatDate = (date) => {
   }).format(new Date(date));
 };
 
+export const formatDateTime = (date) => {
+  if (!date) return '—';
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(new Date(date));
+};
+
+export const toDatetimeLocal = (date) => {
+  if (!date) return '';
+  const d = new Date(date);
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
 export const getInitials = (name) => {
   if (!name) return '?';
   return name

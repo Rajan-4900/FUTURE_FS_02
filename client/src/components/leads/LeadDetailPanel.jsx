@@ -2,6 +2,7 @@ import { X, Pencil, Trash2, Mail, Phone, Building2, Calendar, Tag } from 'lucide
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
 import Avatar from '../ui/Avatar';
+import LeadFollowUpSection from './LeadFollowUpSection';
 import { formatDate } from '../../utils/formatters';
 import {
   STATUS_LABELS,
@@ -23,7 +24,7 @@ function DetailRow({ icon: Icon, label, value }) {
   );
 }
 
-export default function LeadDetailPanel({ lead, onClose, onEdit, onDelete }) {
+export default function LeadDetailPanel({ lead, onClose, onEdit, onDelete, onFollowUpChange }) {
   if (!lead) return null;
 
   return (
@@ -48,7 +49,7 @@ export default function LeadDetailPanel({ lead, onClose, onEdit, onDelete }) {
         </div>
 
         <div className="flex flex-wrap gap-2 border-b border-border px-5 py-3">
-              <Badge status={lead.status}>{STATUS_LABELS[lead.status] || lead.status}</Badge>
+          <Badge status={lead.status}>{STATUS_LABELS[lead.status] || lead.status}</Badge>
           <Badge status={lead.priority}>{PRIORITY_LABELS[lead.priority]}</Badge>
         </div>
 
@@ -61,12 +62,14 @@ export default function LeadDetailPanel({ lead, onClose, onEdit, onDelete }) {
 
           {lead.notes && (
             <div className="border-t border-border py-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-muted">Notes</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-muted">Lead notes</p>
               <p className="mt-2 text-sm leading-relaxed text-slate-700 whitespace-pre-wrap">
                 {lead.notes}
               </p>
             </div>
           )}
+
+          <LeadFollowUpSection lead={lead} onActivityChange={onFollowUpChange} />
 
           <p className="border-t border-border py-4 text-xs text-muted">
             Created {formatDate(lead.createdAt)} · Updated {formatDate(lead.updatedAt)}

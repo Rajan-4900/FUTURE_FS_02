@@ -178,9 +178,9 @@ export default function Dashboard() {
                     description="Log an opportunity"
                   />
                   <QuickAction
-                    to="/leads"
-                    title="Review follow-ups"
-                    description={`${leadStats.pendingFollowups} pending`}
+                    to="/follow-ups"
+                    title="Follow-up reminders"
+                    description="Notes & overdue alerts"
                   />
                 </div>
               </Card>

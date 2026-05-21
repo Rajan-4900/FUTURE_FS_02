@@ -10,6 +10,7 @@ import LeadTable from '../components/leads/LeadTable';
 import LeadMobileCards from '../components/leads/LeadMobileCards';
 import LeadFormModal from '../components/leads/LeadFormModal';
 import LeadDetailPanel from '../components/leads/LeadDetailPanel';
+import { useFollowUpStats } from '../hooks/useFollowUpStats';
 import { getLeads, createLead, updateLead, deleteLead } from '../api/leads';
 import { emptyLeadForm, leadToForm, STATUS_OPTIONS } from '../utils/leadConstants';
 
@@ -29,6 +30,7 @@ export default function Leads() {
   const [editingId, setEditingId] = useState(null);
 
   const [selectedLead, setSelectedLead] = useState(null);
+  const { refresh: refreshFollowUpStats } = useFollowUpStats(60000);
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 350);
@@ -196,12 +198,15 @@ export default function Leads() {
         title={editingId ? 'Edit lead' : 'Add lead'}
       />
 
-      <LeadDetailPanel
-        lead={selectedLead}
-        onClose={() => setSelectedLead(null)}
-        onEdit={() => openEdit(selectedLead)}
-        onDelete={() => handleDelete(selectedLead._id)}
-      />
+      {selectedLead && (
+        <LeadDetailPanel
+          lead={selectedLead}
+          onClose={() => setSelectedLead(null)}
+          onEdit={() => openEdit(selectedLead)}
+          onDelete={() => handleDelete(selectedLead._id)}
+          onFollowUpChange={refreshFollowUpStats}
+        />
+      )}
     </>
   );
 }

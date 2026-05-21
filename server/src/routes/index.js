@@ -3,6 +3,7 @@ import authRoutes from './authRoutes.js';
 import contactRoutes from './contactRoutes.js';
 import leadRoutes from './leadRoutes.js';
 import dealRoutes from './dealRoutes.js';
+import followUpRoutes from './followUpRoutes.js';
 
 const router = express.Router();
 
@@ -14,5 +15,6 @@ router.use('/auth', authRoutes);
 router.use('/contacts', contactRoutes);
 router.use('/leads', leadRoutes);
 router.use('/deals', dealRoutes);
+router.use('/follow-ups', followUpRoutes);
 
 export default router;

@@ -37,7 +37,16 @@ const leadBodyRules = [
     .isIn(['low', 'medium', 'high'])
     .withMessage('Invalid priority'),
   body('notes').optional().trim().isLength({ max: 2000 }),
-  body('followUpDate').optional({ values: 'null' }).isISO8601().withMessage('Invalid follow-up date'),
+  body('followUpDate')
+    .optional({ checkFalsy: true })
+    .custom((value) => {
+      if (!value) return true;
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) {
+        throw new Error('Invalid follow-up date');
+      }
+      return true;
+    }),
 ];
 
 const listRules = [

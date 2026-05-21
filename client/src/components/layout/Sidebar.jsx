@@ -1,17 +1,21 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Users, Handshake, Settings, LogOut, X, Columns3 } from 'lucide-react';
+import { LayoutDashboard, Users, Handshake, Settings, LogOut, X, Columns3, Bell } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { useFollowUpStats } from '../../hooks/useFollowUpStats';
+import FollowUpBadge from '../followups/FollowUpBadge';
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/leads', icon: Users, label: 'Leads' },
   { to: '/pipeline', icon: Columns3, label: 'Pipeline' },
+  { to: '/follow-ups', icon: Bell, label: 'Follow-ups', badge: 'overdue' },
   { to: '/deals', icon: Handshake, label: 'Deals' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];
 
 export default function Sidebar({ onNavigate, onClose }) {
   const { user, logout } = useAuth();
+  const { stats } = useFollowUpStats(60000);
 
   const handleNav = () => onNavigate?.();
 
@@ -43,7 +47,7 @@ export default function Sidebar({ onNavigate, onClose }) {
         <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
           Menu
         </p>
-        {navItems.map(({ to, icon: Icon, label, end }) => (
+        {navItems.map(({ to, icon: Icon, label, end, badge }) => (
           <NavLink
             key={to}
             to={to}
@@ -58,7 +62,8 @@ export default function Sidebar({ onNavigate, onClose }) {
             }
           >
             <Icon size={18} strokeWidth={1.75} />
-            {label}
+            <span className="flex-1">{label}</span>
+            {badge === 'overdue' && <FollowUpBadge count={stats.overdue} />}
           </NavLink>
         ))}
       </nav>

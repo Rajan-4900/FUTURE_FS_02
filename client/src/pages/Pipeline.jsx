@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useOutletContext } from 'react-router-dom';
+import { useFollowUpStats } from '../hooks/useFollowUpStats';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Plus, RefreshCw } from 'lucide-react';
@@ -22,6 +23,7 @@ export default function Pipeline() {
   const [formData, setFormData] = useState(emptyLeadForm);
   const [editingId, setEditingId] = useState(null);
   const [selectedLead, setSelectedLead] = useState(null);
+  const { refresh: refreshFollowUpStats } = useFollowUpStats(60000);
 
   const fetchLeads = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -143,6 +145,7 @@ export default function Pipeline() {
           onClose={() => setSelectedLead(null)}
           onEdit={() => openEdit(selectedLead)}
           onDelete={() => handleDelete(selectedLead._id)}
+          onFollowUpChange={refreshFollowUpStats}
         />
       )}
     </DndProvider>
