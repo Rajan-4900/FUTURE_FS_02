@@ -6,11 +6,11 @@ import {
   updateContact,
   deleteContact,
 } from '../controllers/contactController.js';
-import { protect } from '../middleware/authMiddleware.js';
+import { adminOnly } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.use(protect);
+router.use(adminOnly);
 
 router.route('/').get(getContacts).post(createContact);
 router.route('/:id').get(getContact).put(updateContact).delete(deleteContact);

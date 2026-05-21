@@ -7,11 +7,11 @@ import {
   deleteDeal,
   getDealStats,
 } from '../controllers/dealController.js';
-import { protect } from '../middleware/authMiddleware.js';
+import { adminOnly } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.use(protect);
+router.use(adminOnly);
 
 router.get('/stats', getDealStats);
 router.route('/').get(getDeals).post(createDeal);

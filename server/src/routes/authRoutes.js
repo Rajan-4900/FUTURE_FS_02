@@ -1,24 +1,34 @@
 import express from 'express';
 import { body } from 'express-validator';
-import { register, login, getMe, updateProfile } from '../controllers/authController.js';
-import { protect } from '../middleware/authMiddleware.js';
+import {
+  registerAdmin,
+  loginAdmin,
+  getMe,
+  logout,
+  updateProfile,
+} from '../controllers/authController.js';
+import { protect, adminOnly } from '../middleware/authMiddleware.js';
+import { validate } from '../middleware/validateMiddleware.js';
 
 const router = express.Router();
 
-const registerValidation = [
-  body('name').trim().notEmpty().withMessage('Name is required'),
-  body('email').isEmail().withMessage('Valid email is required'),
-  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-];
+const emailRule = body('email').trim().isEmail().withMessage('Enter a valid email address');
+const passwordRule = body('password')
+  .isLength({ min: 6 })
+  .withMessage('Password must be at least 6 characters');
+const nameRule = body('name').trim().notEmpty().withMessage('Name is required');
 
-const loginValidation = [
-  body('email').isEmail().withMessage('Valid email is required'),
+const registerRules = [nameRule, emailRule, passwordRule, validate];
+const loginRules = [
+  emailRule,
   body('password').notEmpty().withMessage('Password is required'),
+  validate,
 ];
 
-router.post('/register', registerValidation, register);
-router.post('/login', loginValidation, login);
+router.post('/admin/register', registerRules, registerAdmin);
+router.post('/admin/login', loginRules, loginAdmin);
 router.get('/me', protect, getMe);
-router.put('/profile', protect, updateProfile);
+router.post('/logout', protect, logout);
+router.put('/profile', adminOnly, updateProfile);
 
 export default router;

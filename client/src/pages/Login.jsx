@@ -1,68 +1,109 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import AuthCard from '../components/auth/AuthCard';
+import AuthAlert from '../components/auth/AuthAlert';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
+import { validateEmail, validatePassword, getApiError } from '../utils/validateForm';
 
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo = location.state?.from?.pathname || '/';
+
   const [form, setForm] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [error, setError] = useState(location.state?.message || '');
   const [loading, setLoading] = useState(false);
+
+  const validate = () => {
+    const errors = {
+      email: validateEmail(form.email),
+      password: validatePassword(form.password),
+    };
+    setFieldErrors(errors);
+    return !Object.values(errors).some(Boolean);
+  };
+
+  const handleBlur = (field) => {
+    const validators = {
+      email: () => validateEmail(form.email),
+      password: () => validatePassword(form.password),
+    };
+    setFieldErrors((prev) => ({ ...prev, [field]: validators[field]() }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    if (!validate()) return;
+
     setLoading(true);
     try {
-      await login(form);
-      navigate('/');
+      await login({ email: form.email.trim(), password: form.password });
+      navigate(redirectTo, { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(getApiError(err, 'Sign in failed. Check your credentials and try again.'));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-semibold text-slate-900">Sign in</h1>
-      <p className="mt-1 text-sm text-muted">Enter your credentials to access your workspace.</p>
+    <AuthCard
+      title="Admin sign in"
+      subtitle="Enter your credentials to access the CRM dashboard."
+    >
+      <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+        <AuthAlert message={error} />
 
-      <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-        {error && (
-          <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
-        )}
         <Input
-          label="Email"
+          label="Email address"
           type="email"
           name="email"
+          autoComplete="email"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
-          placeholder="you@company.com"
-          required
+          onBlur={() => handleBlur('email')}
+          placeholder="admin@company.com"
+          error={fieldErrors.email}
+          disabled={loading}
         />
+
         <Input
           label="Password"
           type="password"
           name="password"
+          autoComplete="current-password"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
+          onBlur={() => handleBlur('password')}
           placeholder="••••••••"
-          required
+          error={fieldErrors.password}
+          disabled={loading}
         />
+
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? 'Signing in...' : 'Sign in'}
+          {loading ? (
+            <>
+              <Loader2 size={18} className="animate-spin" />
+              Signing in...
+            </>
+          ) : (
+            'Sign in'
+          )}
         </Button>
       </form>
 
       <p className="mt-6 text-center text-sm text-muted">
-        Don&apos;t have an account?{' '}
+        Setting up your workspace?{' '}
         <Link to="/register" className="font-medium text-primary hover:underline">
-          Create one
+          Register admin
         </Link>
       </p>
-    </div>
+    </AuthCard>
   );
 }

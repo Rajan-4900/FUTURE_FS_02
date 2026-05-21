@@ -74,6 +74,7 @@ The Vite dev server proxies `/api` requests to the backend.
 | JWT_SECRET    | Secret for signing tokens            |
 | JWT_EXPIRE    | Token expiry (e.g. `7d`)             |
 | CLIENT_URL    | Frontend URL for CORS                |
+| ADMIN_SETUP_KEY | Key for registering extra admins   |
 
 ### Client (`client/.env`)
 
@@ -81,18 +82,26 @@ The Vite dev server proxies `/api` requests to the backend.
 |----------------|--------------------------------|
 | VITE_API_URL   | API base URL (`/api` or full)  |
 
-## API routes
+## Authentication (Admin)
 
-| Method | Endpoint              | Auth | Description        |
-|--------|-----------------------|------|--------------------|
-| GET    | /api/health           | No   | Health check       |
-| POST   | /api/auth/register    | No   | Create account     |
-| POST   | /api/auth/login       | No   | Sign in            |
-| GET    | /api/auth/me          | Yes  | Current user       |
-| PUT    | /api/auth/profile     | Yes  | Update profile     |
-| CRUD   | /api/contacts         | Yes  | Contact management |
-| CRUD   | /api/deals            | Yes  | Deal management    |
-| GET    | /api/deals/stats      | Yes  | Pipeline stats     |
+- **Register:** `POST /api/auth/admin/register` — creates admin user (bcrypt hashed password)
+- **Login:** `POST /api/auth/admin/login` — returns JWT for admin only
+- **Protected routes:** Bearer token via `Authorization` header
+- **CRM APIs:** Require admin role (`adminOnly` middleware)
+
+First admin registration needs no setup key. Additional admins require `ADMIN_SETUP_KEY` in `.env` and the `setupKey` field in the request body.
+
+| Method | Endpoint                   | Auth  | Description           |
+|--------|----------------------------|-------|-----------------------|
+| GET    | /api/health                | No    | Health check          |
+| POST   | /api/auth/admin/register   | No    | Register admin        |
+| POST   | /api/auth/admin/login      | No    | Admin sign in         |
+| GET    | /api/auth/me               | Token | Current user        |
+| POST   | /api/auth/logout           | Token | Logout                |
+| PUT    | /api/auth/profile          | Admin | Update profile        |
+| CRUD   | /api/contacts              | Admin | Contact management    |
+| CRUD   | /api/deals                 | Admin | Deal management       |
+| GET    | /api/deals/stats           | Admin | Pipeline stats        |
 
 ## Theme
 

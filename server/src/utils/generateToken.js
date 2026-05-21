@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { formatUser } from './formatUser.js';
 
 export const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -12,12 +13,6 @@ export const sendTokenResponse = (res, user, statusCode = 200) => {
   res.status(statusCode).json({
     success: true,
     token,
-    user: {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      company: user.company,
-    },
+    user: formatUser(user),
   });
 };

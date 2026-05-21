@@ -64,7 +64,8 @@ export default function Sidebar({ onNavigate }) {
           </div>
         </div>
         <button
-          onClick={logout}
+          type="button"
+          onClick={() => logout()}
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-400 transition-colors duration-150 hover:bg-slate-800/50 hover:text-slate-200"
         >
           <LogOut size={18} strokeWidth={1.75} />

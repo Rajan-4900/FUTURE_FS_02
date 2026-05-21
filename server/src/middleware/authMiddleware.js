@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import asyncHandler from '../utils/asyncHandler.js';
 
-export const protect = async (req, res, next) => {
+export const protect = asyncHandler(async (req, res, next) => {
   let token;
 
   if (req.headers.authorization?.startsWith('Bearer')) {
@@ -9,7 +10,7 @@ export const protect = async (req, res, next) => {
   }
 
   if (!token) {
-    return res.status(401).json({ success: false, message: 'Not authorized, no token' });
+    return res.status(401).json({ success: false, message: 'Not authorized — token required' });
   }
 
   try {
@@ -17,23 +18,27 @@ export const protect = async (req, res, next) => {
     req.user = await User.findById(decoded.id).select('-password');
 
     if (!req.user) {
-      return res.status(401).json({ success: false, message: 'User not found' });
+      return res.status(401).json({ success: false, message: 'User no longer exists' });
     }
 
     next();
-  } catch {
-    return res.status(401).json({ success: false, message: 'Not authorized, token invalid' });
+  } catch (error) {
+    const message =
+      error.name === 'TokenExpiredError' ? 'Session expired — please sign in again' : 'Invalid token';
+    return res.status(401).json({ success: false, message });
   }
-};
+});
 
 export const authorize = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({
         success: false,
-        message: `Role '${req.user.role}' is not authorized`,
+        message: 'You do not have permission to access this resource',
       });
     }
     next();
   };
 };
+
+export const adminOnly = [protect, authorize('admin')];
