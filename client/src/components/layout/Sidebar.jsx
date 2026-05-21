@@ -4,7 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard', end: true },
-  { to: '/contacts', icon: Users, label: 'Contacts' },
+  { to: '/leads', icon: Users, label: 'Leads' },
   { to: '/deals', icon: Handshake, label: 'Deals' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];

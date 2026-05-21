@@ -4,7 +4,7 @@ import Badge from '../ui/Badge';
 import { formatDate } from '../../utils/formatters';
 
 const typeConfig = {
-  contact: { icon: UserPlus, href: '/contacts', label: 'Contact' },
+  contact: { icon: UserPlus, href: '/leads', label: 'Lead' },
   deal: { icon: Handshake, href: '/deals', label: 'Deal' },
 };
 

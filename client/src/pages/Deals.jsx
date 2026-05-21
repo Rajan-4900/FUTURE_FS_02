@@ -8,7 +8,7 @@ import Input from '../components/ui/Input';
 import Badge from '../components/ui/Badge';
 import Spinner from '../components/ui/Spinner';
 import { getDeals, createDeal, updateDeal, deleteDeal } from '../api/deals';
-import { getContacts } from '../api/contacts';
+import { getLeads } from '../api/leads';
 import { formatCurrency, formatDate, STAGE_LABELS } from '../utils/formatters';
 
 const emptyForm = {
@@ -32,10 +32,10 @@ export default function Deals() {
 
   const fetchData = () => {
     setLoading(true);
-    Promise.all([getDeals(), getContacts()])
-      .then(([dealsRes, contactsRes]) => {
+    Promise.all([getDeals(), getLeads({ limit: 100 })])
+      .then(([dealsRes, leadsRes]) => {
         setDeals(dealsRes.data.data);
-        setContacts(contactsRes.data.data);
+        setContacts(leadsRes.data.data);
       })
       .catch(console.error)
       .finally(() => setLoading(false));

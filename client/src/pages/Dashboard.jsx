@@ -16,7 +16,7 @@ import PipelineBar from '../components/dashboard/PipelineBar';
 import Card, { CardHeader } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Spinner from '../components/ui/Spinner';
-import { getContacts } from '../api/contacts';
+import { getLeads } from '../api/leads';
 import { getDeals, getDealStats } from '../api/deals';
 import { formatCurrency } from '../utils/formatters';
 import { computeLeadStats, buildRecentActivity } from '../utils/dashboardStats';
@@ -31,9 +31,9 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([getContacts(), getDeals(), getDealStats()])
-      .then(([contactsRes, dealsRes, statsRes]) => {
-        setContacts(contactsRes.data.data);
+    Promise.all([getLeads({ limit: 50 }), getDeals(), getDealStats()])
+      .then(([leadsRes, dealsRes, statsRes]) => {
+        setContacts(leadsRes.data.data);
         setDeals(dealsRes.data.data);
         setDealStats(statsRes.data.data);
       })
@@ -54,7 +54,7 @@ export default function Dashboard() {
         subtitle="Overview of your leads, pipeline, and recent activity."
         onMenuClick={openSidebar}
         action={
-          <Link to="/contacts" className="hidden sm:block">
+          <Link to="/leads" className="hidden sm:block">
             <Button size="sm">
               <Plus size={16} />
               New lead
@@ -146,7 +146,7 @@ export default function Dashboard() {
                     subtitle="Latest updates across contacts and deals"
                     action={
                       <Link
-                        to="/contacts"
+                        to="/leads"
                         className="text-sm font-medium text-primary transition-colors duration-150 hover:underline"
                       >
                         View all
@@ -163,9 +163,9 @@ export default function Dashboard() {
                 <CardHeader title="Quick actions" subtitle="Common tasks" />
                 <div className="space-y-2">
                   <QuickAction
-                    to="/contacts"
+                    to="/leads"
                     title="Add new lead"
-                    description="Create a contact"
+                    description="Create a lead"
                   />
                   <QuickAction
                     to="/deals"
@@ -173,7 +173,7 @@ export default function Dashboard() {
                     description="Log an opportunity"
                   />
                   <QuickAction
-                    to="/contacts"
+                    to="/leads"
                     title="Review follow-ups"
                     description={`${leadStats.pendingFollowups} pending`}
                   />

@@ -6,7 +6,7 @@ import AuthLayout from '../layouts/AuthLayout';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Dashboard from '../pages/Dashboard';
-import Contacts from '../pages/Contacts';
+import Leads from '../pages/Leads';
 import Deals from '../pages/Deals';
 import Settings from '../pages/Settings';
 import NotFound from '../pages/NotFound';
@@ -24,7 +24,8 @@ export default function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route element={<DashboardLayout />}>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/contacts" element={<Contacts />} />
+          <Route path="/leads" element={<Leads />} />
+          <Route path="/contacts" element={<Navigate to="/leads" replace />} />
           <Route path="/deals" element={<Deals />} />
           <Route path="/settings" element={<Settings />} />
         </Route>

@@ -19,7 +19,7 @@ const dealSchema = new mongoose.Schema(
     },
     contact: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Contact',
+      ref: 'Lead',
     },
     expectedCloseDate: {
       type: Date,
