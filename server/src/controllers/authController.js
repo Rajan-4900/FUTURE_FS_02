@@ -61,6 +61,15 @@ export const logout = asyncHandler(async (_req, res) => {
   res.status(200).json({ success: true, message: 'Logged out successfully' });
 });
 
+export const getSetupStatus = asyncHandler(async (_req, res) => {
+  const adminCount = await User.countDocuments({ role: 'admin' });
+  res.status(200).json({
+    success: true,
+    needsSetup: adminCount === 0,
+    adminOnly: true,
+  });
+});
+
 export const updateProfile = asyncHandler(async (req, res) => {
   const { name, company } = req.body;
 

@@ -83,7 +83,7 @@ export default function Register() {
   return (
     <AuthCard
       title="Register admin"
-      subtitle="Create the primary administrator account for your CRM workspace."
+      subtitle="One-time setup. This CRM is for administrators only."
     >
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         <AuthAlert message={error} />

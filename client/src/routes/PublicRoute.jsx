@@ -17,5 +17,9 @@ export default function PublicRoute() {
     return <Navigate to="/" replace />;
   }
 
+  if (isAuthenticated && !isAdmin) {
+    return <Navigate to="/login" state={{ message: 'Administrator access only' }} replace />;
+  }
+
   return <Outlet />;
 }

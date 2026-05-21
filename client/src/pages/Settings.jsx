@@ -33,7 +33,7 @@ export default function Settings() {
     <>
       <Header
         title="Settings"
-        subtitle="Manage your account preferences"
+        subtitle="Administrator account settings"
         onMenuClick={openSidebar}
       />
 
@@ -84,7 +84,7 @@ export default function Settings() {
           <div className="mt-4 space-y-3 text-sm">
             <div className="flex justify-between py-2 border-b border-border">
               <span className="text-muted">Role</span>
-              <span className="font-medium text-slate-800 capitalize">{user?.role}</span>
+              <span className="font-medium text-slate-800">Administrator</span>
             </div>
             <div className="flex justify-between py-2">
               <span className="text-muted">User ID</span>

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getSetupStatus } from '../api/auth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -18,6 +19,13 @@ export default function Login() {
   const [fieldErrors, setFieldErrors] = useState({});
   const [error, setError] = useState(location.state?.message || '');
   const [loading, setLoading] = useState(false);
+  const [needsSetup, setNeedsSetup] = useState(false);
+
+  useEffect(() => {
+    getSetupStatus()
+      .then(({ data }) => setNeedsSetup(data.needsSetup))
+      .catch(() => setNeedsSetup(false));
+  }, []);
 
   const validate = () => {
     const errors = {
@@ -55,7 +63,7 @@ export default function Login() {
   return (
     <AuthCard
       title="Admin sign in"
-      subtitle="Enter your credentials to access the CRM dashboard."
+      subtitle="Administrator access only. Sign in to manage leads and deals."
     >
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         <AuthAlert message={error} />
@@ -98,12 +106,18 @@ export default function Login() {
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-muted">
-        Setting up your workspace?{' '}
-        <Link to="/register" className="font-medium text-primary hover:underline">
-          Register admin
-        </Link>
-      </p>
+      {needsSetup ? (
+        <p className="mt-6 text-center text-sm text-muted">
+          First-time setup?{' '}
+          <Link to="/register" className="font-medium text-primary hover:underline">
+            Create admin account
+          </Link>
+        </p>
+      ) : (
+        <p className="mt-6 text-center text-xs text-muted">
+          This application is restricted to administrators.
+        </p>
+      )}
     </AuthCard>
   );
 }

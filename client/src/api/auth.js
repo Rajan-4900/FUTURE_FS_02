@@ -1,5 +1,6 @@
 import api from './axios';
 
+export const getSetupStatus = () => api.get('/auth/setup-status');
 export const registerAdmin = (data) => api.post('/auth/admin/register', data);
 export const loginAdmin = (data) => api.post('/auth/admin/login', data);
 export const getMe = () => api.get('/auth/me');

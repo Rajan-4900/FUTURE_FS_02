@@ -5,6 +5,7 @@ import {
   loginAdmin,
   getMe,
   logout,
+  getSetupStatus,
   updateProfile,
 } from '../controllers/authController.js';
 import { protect, adminOnly } from '../middleware/authMiddleware.js';
@@ -25,6 +26,7 @@ const loginRules = [
   validate,
 ];
 
+router.get('/setup-status', getSetupStatus);
 router.post('/admin/register', registerRules, registerAdmin);
 router.post('/admin/login', loginRules, loginAdmin);
 router.get('/me', protect, getMe);

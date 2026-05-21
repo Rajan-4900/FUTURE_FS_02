@@ -23,7 +23,7 @@ export default function Sidebar({ onNavigate, onClose }) {
           </div>
           <div>
             <p className="text-sm font-semibold text-white">Future CRM</p>
-            <p className="text-xs text-slate-400">Sales workspace</p>
+            <p className="text-xs text-slate-400">Admin only</p>
           </div>
         </div>
         {onClose && (
