@@ -1,10 +1,11 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Users, Handshake, Settings, LogOut, X } from 'lucide-react';
+import { LayoutDashboard, Users, Handshake, Settings, LogOut, X, Columns3 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/leads', icon: Users, label: 'Leads' },
+  { to: '/pipeline', icon: Columns3, label: 'Pipeline' },
   { to: '/deals', icon: Handshake, label: 'Deals' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];

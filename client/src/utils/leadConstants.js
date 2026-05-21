@@ -1,9 +1,31 @@
+export const PIPELINE_COLUMNS = [
+  { id: 'new', title: 'New', accent: 'bg-slate-100 text-slate-600' },
+  { id: 'contacted', title: 'Contacted', accent: 'bg-blue-50 text-blue-700' },
+  { id: 'proposal_sent', title: 'Proposal Sent', accent: 'bg-violet-50 text-violet-700' },
+  { id: 'converted', title: 'Converted', accent: 'bg-emerald-50 text-emerald-700' },
+];
+
 export const STATUS_LABELS = {
-  lead: 'Lead',
-  prospect: 'Prospect',
-  customer: 'Customer',
-  inactive: 'Inactive',
+  new: 'New',
+  contacted: 'Contacted',
+  proposal_sent: 'Proposal Sent',
+  converted: 'Converted',
+  // legacy mapping labels (display only)
+  lead: 'New',
+  prospect: 'Contacted',
+  customer: 'Converted',
+  inactive: 'New',
 };
+
+export const LEGACY_STATUS_MAP = {
+  lead: 'new',
+  prospect: 'contacted',
+  customer: 'converted',
+  inactive: 'new',
+};
+
+export const normalizeLeadStatus = (status) =>
+  LEGACY_STATUS_MAP[status] || status || 'new';
 
 export const PRIORITY_LABELS = {
   low: 'Low',
@@ -21,9 +43,9 @@ export const SOURCE_LABELS = {
   other: 'Other',
 };
 
-export const STATUS_OPTIONS = Object.entries(STATUS_LABELS).map(([value, label]) => ({
-  value,
-  label,
+export const STATUS_OPTIONS = PIPELINE_COLUMNS.map((col) => ({
+  value: col.id,
+  label: col.title,
 }));
 
 export const PRIORITY_OPTIONS = Object.entries(PRIORITY_LABELS).map(([value, label]) => ({
@@ -42,7 +64,7 @@ export const emptyLeadForm = {
   phone: '',
   company: '',
   leadSource: 'website',
-  status: 'lead',
+  status: 'new',
   priority: 'medium',
   notes: '',
   followUpDate: '',
@@ -54,7 +76,7 @@ export const leadToForm = (lead) => ({
   phone: lead.phone || '',
   company: lead.company || '',
   leadSource: lead.leadSource || 'website',
-  status: lead.status || 'lead',
+  status: normalizeLeadStatus(lead.status),
   priority: lead.priority || 'medium',
   notes: lead.notes || '',
   followUpDate: lead.followUpDate

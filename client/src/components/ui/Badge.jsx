@@ -1,4 +1,8 @@
 const statusStyles = {
+  new: 'bg-slate-100 text-slate-700',
+  contacted: 'bg-blue-50 text-blue-700',
+  proposal_sent: 'bg-violet-50 text-violet-700',
+  converted: 'bg-emerald-50 text-emerald-700',
   lead: 'bg-slate-100 text-slate-700',
   prospect: 'bg-blue-50 text-blue-700',
   customer: 'bg-emerald-50 text-emerald-700',

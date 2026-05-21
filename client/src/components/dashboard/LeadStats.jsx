@@ -1,17 +1,17 @@
-import { STATUS_LABELS } from '../../utils/formatters';
+import { PIPELINE_COLUMNS } from '../../utils/leadConstants';
 
-const STATUS_COLORS = {
-  lead: 'bg-slate-400',
-  prospect: 'bg-blue-500',
-  customer: 'bg-emerald-500',
-  inactive: 'bg-slate-300',
+const BAR_COLORS = {
+  new: 'bg-slate-400',
+  contacted: 'bg-blue-500',
+  proposal_sent: 'bg-violet-500',
+  converted: 'bg-emerald-500',
 };
 
 export default function LeadStats({ byStatus, total, conversionRate }) {
-  const items = Object.entries(STATUS_LABELS).map(([key, label]) => ({
-    key,
-    label,
-    count: byStatus?.[key] || 0,
+  const items = PIPELINE_COLUMNS.map((col) => ({
+    key: col.id,
+    label: col.title,
+    count: byStatus?.[col.id] || 0,
   }));
 
   const max = Math.max(...items.map((i) => i.count), 1);
@@ -26,7 +26,7 @@ export default function LeadStats({ byStatus, total, conversionRate }) {
           <p className="mt-0.5 text-xl font-semibold text-slate-900">{conversionRate}%</p>
         </div>
         <p className="text-sm text-muted">
-          <span className="font-medium text-slate-700">{byStatus?.customer || 0}</span> of{' '}
+          <span className="font-medium text-slate-700">{byStatus?.converted || 0}</span> of{' '}
           {total} converted
         </p>
       </div>
@@ -40,7 +40,7 @@ export default function LeadStats({ byStatus, total, conversionRate }) {
             </div>
             <div className="h-2 overflow-hidden rounded-full bg-slate-100">
               <div
-                className={`h-full rounded-full transition-all duration-300 ${STATUS_COLORS[key]}`}
+                className={`h-full rounded-full transition-all duration-300 ${BAR_COLORS[key]}`}
                 style={{ width: `${(count / max) * 100}%` }}
               />
             </div>

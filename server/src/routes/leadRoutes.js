@@ -5,12 +5,15 @@ import {
   getLead,
   createLead,
   updateLead,
+  updateLeadStatus,
   deleteLead,
 } from '../controllers/leadController.js';
 import { adminOnly } from '../middleware/authMiddleware.js';
 import { validate } from '../middleware/validateMiddleware.js';
 
 const router = express.Router();
+
+const PIPELINE_STATUSES = ['new', 'contacted', 'proposal_sent', 'converted'];
 
 const leadBodyRules = [
   body('name').trim().notEmpty().withMessage('Name is required'),
@@ -27,7 +30,7 @@ const leadBodyRules = [
     .withMessage('Invalid lead source'),
   body('status')
     .optional()
-    .isIn(['lead', 'prospect', 'customer', 'inactive'])
+    .isIn(PIPELINE_STATUSES)
     .withMessage('Invalid status'),
   body('priority')
     .optional()
@@ -39,10 +42,8 @@ const leadBodyRules = [
 
 const listRules = [
   query('page').optional().isInt({ min: 1 }),
-  query('limit').optional().isInt({ min: 1, max: 50 }),
-  query('status')
-    .optional()
-    .isIn(['all', 'lead', 'prospect', 'customer', 'inactive']),
+  query('limit').optional().isInt({ min: 1, max: 100 }),
+  query('status').optional().trim(),
   query('search').optional().trim(),
   validate,
 ];
@@ -52,6 +53,13 @@ router.use(adminOnly);
 router.get('/', listRules, getLeads);
 router.get('/:id', param('id').isMongoId().withMessage('Invalid lead ID'), validate, getLead);
 router.post('/', leadBodyRules, validate, createLead);
+router.patch(
+  '/:id/status',
+  param('id').isMongoId(),
+  body('status').isIn(PIPELINE_STATUSES).withMessage('Invalid pipeline status'),
+  validate,
+  updateLeadStatus
+);
 router.put('/:id', param('id').isMongoId(), ...leadBodyRules, validate, updateLead);
 router.delete('/:id', param('id').isMongoId(), validate, deleteLead);
 

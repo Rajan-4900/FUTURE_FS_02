@@ -48,7 +48,7 @@ export default function LeadDetailPanel({ lead, onClose, onEdit, onDelete }) {
         </div>
 
         <div className="flex flex-wrap gap-2 border-b border-border px-5 py-3">
-          <Badge status={lead.status}>{STATUS_LABELS[lead.status]}</Badge>
+              <Badge status={lead.status}>{STATUS_LABELS[lead.status] || lead.status}</Badge>
           <Badge status={lead.priority}>{PRIORITY_LABELS[lead.priority]}</Badge>
         </div>
 

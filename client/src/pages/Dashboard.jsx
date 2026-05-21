@@ -163,6 +163,11 @@ export default function Dashboard() {
                 <CardHeader title="Quick actions" subtitle="Common tasks" />
                 <div className="space-y-2">
                   <QuickAction
+                    to="/pipeline"
+                    title="Open pipeline"
+                    description="Kanban board"
+                  />
+                  <QuickAction
                     to="/leads"
                     title="Add new lead"
                     description="Create a lead"
