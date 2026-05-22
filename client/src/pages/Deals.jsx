@@ -117,7 +117,8 @@ export default function Deals() {
           </div>
         ) : (
           <Card padding={false}>
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden sm:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border text-left text-xs text-muted">
@@ -176,6 +177,54 @@ export default function Deals() {
                   )}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Stacked Card View */}
+            <div className="block sm:hidden divide-y divide-border">
+              {deals.length === 0 ? (
+                <div className="px-5 py-12 text-center text-muted">
+                  No deals yet. Create your first opportunity.
+                </div>
+              ) : (
+                deals.map((d) => (
+                  <div key={d._id} className="p-4 space-y-3 hover:bg-slate-50/50 transition-colors duration-150">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h4 className="font-semibold text-slate-800 text-sm">{d.title}</h4>
+                        <p className="text-xs text-muted mt-0.5">Contact: {d.contact?.name || '—'}</p>
+                      </div>
+                      <Badge status={d.stage}>{STAGE_LABELS[d.stage]}</Badge>
+                    </div>
+                    <div className="flex items-center justify-between text-xs pt-1">
+                      <div>
+                        <span className="text-slate-500">Value: </span>
+                        <span className="font-bold text-slate-800">{formatCurrency(d.value)}</span>
+                      </div>
+                      {d.expectedCloseDate && (
+                        <div className="text-slate-500">
+                          Close: <span className="font-medium">{formatDate(d.expectedCloseDate)}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex justify-end gap-2 border-t border-border/60 pt-3 mt-2">
+                      <button
+                        onClick={() => openEdit(d)}
+                        className="flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 touch-manipulation"
+                      >
+                        <Pencil size={14} />
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(d._id)}
+                        className="flex items-center gap-1 rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 touch-manipulation"
+                      >
+                        <Trash2 size={14} />
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </Card>
         )}
