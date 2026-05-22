@@ -22,13 +22,7 @@ const createRules = [
   body('note').trim().notEmpty().withMessage('Note content is required'),
   body('type').optional().isIn(TYPES),
   body('title').optional().trim().isLength({ max: 200 }),
-  body('reminderDate')
-    .optional({ checkFalsy: true })
-    .custom((value) => {
-      if (!value) return true;
-      if (Number.isNaN(new Date(value).getTime())) throw new Error('Invalid reminder date');
-      return true;
-    }),
+  body('reminderDate').optional({ values: 'null' }).isISO8601(),
   validate,
 ];
 
@@ -36,13 +30,7 @@ const updateRules = [
   body('note').optional().trim().notEmpty(),
   body('type').optional().isIn(TYPES),
   body('title').optional().trim().isLength({ max: 200 }),
-  body('reminderDate')
-    .optional({ checkFalsy: true })
-    .custom((value) => {
-      if (!value) return true;
-      if (Number.isNaN(new Date(value).getTime())) throw new Error('Invalid reminder date');
-      return true;
-    }),
+  body('reminderDate').optional({ values: 'null' }).isISO8601(),
   body('completed').optional().isBoolean(),
   validate,
 ];

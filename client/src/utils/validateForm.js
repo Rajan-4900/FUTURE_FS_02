@@ -26,10 +26,8 @@ export const getApiError = (error, fallback = 'Something went wrong') => {
   }
 
   const data = error.response.data;
-  if (data?.errors?.length) {
-    return data.errors.map((e) => e.message || e.msg).filter(Boolean).join('. ');
-  }
-  if (data?.message && data.message !== 'Validation failed') return data.message;
   if (data?.message) return data.message;
+  if (data?.errors?.[0]?.message) return data.errors[0].message;
+  if (data?.errors?.[0]?.msg) return data.errors[0].msg;
   return fallback;
 };
