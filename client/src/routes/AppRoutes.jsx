@@ -10,6 +10,7 @@ import Leads from '../pages/Leads';
 import Pipeline from '../pages/Pipeline';
 import FollowUps from '../pages/FollowUps';
 import Deals from '../pages/Deals';
+import Analytics from '../pages/Analytics';
 import Settings from '../pages/Settings';
 import NotFound from '../pages/NotFound';
 
@@ -31,6 +32,7 @@ export default function AppRoutes() {
           <Route path="/follow-ups" element={<FollowUps />} />
           <Route path="/contacts" element={<Navigate to="/leads" replace />} />
           <Route path="/deals" element={<Deals />} />
+          <Route path="/analytics" element={<Analytics />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
       </Route>

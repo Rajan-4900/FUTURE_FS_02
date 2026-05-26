@@ -106,18 +106,12 @@ export default function Login() {
         </Button>
       </form>
 
-      {needsSetup ? (
-        <p className="mt-6 text-center text-sm text-muted">
-          First-time setup?{' '}
-          <Link to="/register" className="font-medium text-primary hover:underline">
-            Create admin account
-          </Link>
-        </p>
-      ) : (
-        <p className="mt-6 text-center text-xs text-muted">
-          This application is restricted to administrators.
-        </p>
-      )}
+      <p className="mt-6 text-center text-sm text-muted">
+        {needsSetup ? 'First-time setup? ' : "Don't have an account? "}
+        <Link to="/register" className="font-medium text-primary hover:underline">
+          Create admin account
+        </Link>
+      </p>
     </AuthCard>
   );
 }

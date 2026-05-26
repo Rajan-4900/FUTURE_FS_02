@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Users, Handshake, Settings, LogOut, X, Columns3, Bell } from 'lucide-react';
+import { LayoutDashboard, Users, Handshake, Settings, LogOut, X, Columns3, Bell, LineChart } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useFollowUpStats } from '../../hooks/useFollowUpStats';
 import FollowUpBadge from '../followups/FollowUpBadge';
@@ -10,6 +10,7 @@ const navItems = [
   { to: '/pipeline', icon: Columns3, label: 'Pipeline' },
   { to: '/follow-ups', icon: Bell, label: 'Follow-ups', badge: 'overdue' },
   { to: '/deals', icon: Handshake, label: 'Deals' },
+  { to: '/analytics', icon: LineChart, label: 'Analytics' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];
 

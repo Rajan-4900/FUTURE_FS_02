@@ -4,7 +4,6 @@ import {
   TrendingUp,
   Users,
   Handshake,
-  Activity,
   Award,
   Calendar,
   Filter,
@@ -62,6 +61,36 @@ const STATUS_LABELS = {
   contacted: 'Contacted',
   proposal_sent: 'Proposal Sent',
   converted: 'Converted',
+};
+
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="rounded-lg border border-border bg-white p-3 card-shadow text-xs">
+        <p className="font-semibold text-slate-800 mb-1">{label}</p>
+        {payload.map((p, index) => (
+          <p key={index} style={{ color: p.color }} className="font-medium">
+            {p.name}: {p.value}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
+const CustomRateTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="rounded-lg border border-border bg-white p-3 card-shadow text-xs">
+        <p className="font-semibold text-slate-800 mb-1">{label}</p>
+        <p className="font-medium text-primary">
+          Conversion Rate: {payload[0].value}%
+        </p>
+      </div>
+    );
+  }
+  return null;
 };
 
 export default function Analytics() {
@@ -232,36 +261,6 @@ export default function Analytics() {
       value: val,
     }));
   }, [filteredLeads]);
-
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="rounded-lg border border-border bg-white p-3 card-shadow text-xs">
-          <p className="font-semibold text-slate-800 mb-1">{label}</p>
-          {payload.map((p, index) => (
-            <p key={index} style={{ color: p.color }} className="font-medium">
-              {p.name}: {p.value}
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
-
-  const CustomRateTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="rounded-lg border border-border bg-white p-3 card-shadow text-xs">
-          <p className="font-semibold text-slate-800 mb-1">{label}</p>
-          <p className="font-medium text-primary">
-            Conversion Rate: {payload[0].value}%
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <>
