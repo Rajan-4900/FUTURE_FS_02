@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { Plus, Trash2, Pencil } from 'lucide-react';
+import { Plus, Trash2, Pencil, Briefcase } from 'lucide-react';
 import Header from '../components/layout/Header';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Badge from '../components/ui/Badge';
-import Spinner from '../components/ui/Spinner';
 import { getDeals, createDeal, updateDeal, deleteDeal } from '../api/deals';
 import { getLeads } from '../api/leads';
 import { formatCurrency, formatDate, STAGE_LABELS } from '../utils/formatters';
+import { SkeletonTable } from '../components/ui/Skeleton';
+import EmptyState from '../components/ui/EmptyState';
+import { useToast } from '../context/ToastContext';
 
 const emptyForm = {
   title: '',
@@ -22,6 +24,7 @@ const emptyForm = {
 
 export default function Deals() {
   const { openSidebar } = useOutletContext();
+  const { toast } = useToast();
   const [deals, setDeals] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -78,12 +81,15 @@ export default function Deals() {
     try {
       if (editingId) {
         await updateDeal(editingId, payload);
+        toast('Deal updated successfully', 'success');
       } else {
         await createDeal(payload);
+        toast('New deal opportunity created successfully', 'success');
       }
       setModalOpen(false);
       fetchData();
     } catch (err) {
+      toast('Failed to save deal opportunity', 'error');
       console.error(err);
     } finally {
       setSaving(false);
@@ -92,8 +98,13 @@ export default function Deals() {
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this deal?')) return;
-    await deleteDeal(id);
-    fetchData();
+    try {
+      await deleteDeal(id);
+      toast('Deal opportunity deleted successfully', 'success');
+      fetchData();
+    } catch {
+      toast('Failed to delete deal opportunity', 'error');
+    }
   };
 
   return (
@@ -112,33 +123,34 @@ export default function Deals() {
 
       <main className="flex-1 p-4 md:p-6">
         {loading ? (
-          <div className="flex justify-center py-20">
-            <Spinner />
-          </div>
+          <SkeletonTable rows={8} cols={6} />
         ) : (
-          <Card padding={false}>
-            {/* Desktop Table View */}
-            <div className="hidden sm:block overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border text-left text-xs text-muted">
-                    <th className="px-5 py-3 font-medium md:px-6">Deal</th>
-                    <th className="px-5 py-3 font-medium">Value</th>
-                    <th className="px-5 py-3 font-medium hidden sm:table-cell">Contact</th>
-                    <th className="px-5 py-3 font-medium">Stage</th>
-                    <th className="px-5 py-3 font-medium hidden md:table-cell">Close date</th>
-                    <th className="px-5 py-3 font-medium text-right md:px-6">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {deals.length === 0 ? (
-                    <tr>
-                      <td colSpan={6} className="px-5 py-12 text-center text-muted md:px-6">
-                        No deals yet. Create your first opportunity.
-                      </td>
-                    </tr>
-                  ) : (
-                    deals.map((d) => (
+          <Card padding={deals.length === 0}>
+            {deals.length === 0 ? (
+              <EmptyState
+                title="No deals found"
+                description="Keep track of prospective deals, contract values, and closing dates in one convenient workspace."
+                icon={Briefcase}
+                actionText="Create opportunity"
+                onAction={openCreate}
+              />
+            ) : (
+              <>
+                {/* Desktop Table View */}
+                <div className="hidden sm:block overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-border text-left text-xs text-muted">
+                        <th className="px-5 py-3 font-medium md:px-6">Deal</th>
+                        <th className="px-5 py-3 font-medium">Value</th>
+                        <th className="px-5 py-3 font-medium hidden sm:table-cell">Contact</th>
+                        <th className="px-5 py-3 font-medium">Stage</th>
+                        <th className="px-5 py-3 font-medium hidden md:table-cell">Close date</th>
+                        <th className="px-5 py-3 font-medium text-right md:px-6">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {deals.map((d) => (
                       <tr
                         key={d._id}
                         className="border-b border-border last:border-0 hover:bg-slate-50/50"
@@ -173,20 +185,14 @@ export default function Deals() {
                           </div>
                         </td>
                       </tr>
-                    ))
-                  )}
+                    ))}
                 </tbody>
               </table>
             </div>
 
             {/* Mobile Stacked Card View */}
             <div className="block sm:hidden divide-y divide-border">
-              {deals.length === 0 ? (
-                <div className="px-5 py-12 text-center text-muted">
-                  No deals yet. Create your first opportunity.
-                </div>
-              ) : (
-                deals.map((d) => (
+              {deals.map((d) => (
                   <div key={d._id} className="p-4 space-y-3 hover:bg-slate-50/50 transition-colors duration-150">
                     <div className="flex items-start justify-between gap-3">
                       <div>
@@ -223,9 +229,10 @@ export default function Deals() {
                       </button>
                     </div>
                   </div>
-                ))
-              )}
+                ))}
             </div>
+              </>
+            )}
           </Card>
         )}
       </main>
