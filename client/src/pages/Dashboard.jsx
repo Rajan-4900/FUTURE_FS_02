@@ -72,7 +72,7 @@ export default function Dashboard() {
           <div className="mx-auto max-w-7xl space-y-6 lg:space-y-8">
             {/* Stat cards — responsive grid */}
             <section aria-label="Key metrics">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <StatCard
                   label="Total leads"
                   value={leadStats.totalLeads}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Plus } from 'lucide-react';
 import Button from '../ui/Button';
 import FollowUpTimeline from '../followups/FollowUpTimeline';
@@ -16,18 +16,18 @@ export default function LeadFollowUpSection({ lead, onActivityChange }) {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const fetchItems = () => {
+  const fetchItems = useCallback(() => {
     if (!lead?._id) return;
     setLoading(true);
     getFollowUps({ lead: lead._id, limit: 20 })
       .then(({ data }) => setItems(data.data))
       .catch(console.error)
       .finally(() => setLoading(false));
-  };
+  }, [lead._id]);
 
   useEffect(() => {
     fetchItems();
-  }, [lead?._id]);
+  }, [fetchItems]);
 
   const handleSave = async (payload) => {
     await createFollowUp({ ...payload, lead: lead._id });
