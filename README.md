@@ -1,121 +1,117 @@
-# Future CRM
+# 🚀 Future CRM — Sales & Follow-ups Platform
 
-A production-ready MERN stack CRM with a clean SaaS dashboard UI.
+A polished full-stack CRM and pipeline management app with a clean SaaS-style dashboard. Designed for lead management, deals, and follow-ups with role-based admin authentication.
 
-## Stack
+### Quick overview
+- 🔧 Frontend: React + Vite + Tailwind CSS
+- ⚙️ Backend: Node.js + Express 5 + Mongoose (MongoDB)
+- 🔐 Auth: JWT-based admin authentication
+- 🧩 Purpose: Manage leads, deals, contacts, and follow-up timelines
 
-- **Frontend:** React 19, Vite, Tailwind CSS v4, React Router, Axios
-- **Backend:** Node.js, Express 5, MongoDB, Mongoose, JWT
-- **Auth:** Register, login, protected routes, bearer tokens
+---
 
-## Project structure
+## ✨ Highlights
+- Clean, component-driven React UI with dashboard widgets and Kanban pipeline components
+- API-first Express server with modular controllers, middleware, and Mongoose models
+- Built-in follow-up tools and timeline UI to keep leads moving through the pipeline
+
+## 🧭 Project structure
 
 ```
 FUTURE_FS_02/
-├── client/                 # React + Vite frontend
-│   └── src/
-│       ├── api/            # Axios instance & API modules
-│       ├── components/     # UI, layout, dashboard widgets
-│       ├── context/        # Auth context
-│       ├── hooks/
-│       ├── layouts/
-│       ├── pages/
-│       ├── routes/
-│       └── utils/
-├── server/                 # Express API
-│   └── src/
-│       ├── config/         # MongoDB connection
-│       ├── controllers/
-│       ├── middleware/     # JWT auth, error handling
-│       ├── models/
-│       ├── routes/
-│       └── utils/          # Token helpers
-└── README.md
+├── client/                 # React + Vite frontend (UI, pages, hooks, api)
+├── server/                 # Express API (controllers, models, routes)
+└── README.md               # You are here
 ```
 
-## Getting started
+## 🛠️ Tech stack
+- React 19, Vite, Tailwind CSS
+- Node.js, Express 5, Mongoose
+- JWT for auth, Axios for client API calls
+- Dev tools: ESLint (client), Nodemon (server)
 
-### Prerequisites
+---
 
-- Node.js 18+
-- MongoDB running locally or a MongoDB Atlas URI
+## ⚡ Quick start (development)
+Open two terminals.
 
-### 1. Backend setup
+Terminal 1 — backend:
 
-```bash
-cd server
-cp .env.example .env
-# Edit .env with your MONGODB_URI and JWT_SECRET
+```powershell
+cd "server"
+npm install
+copy .env.example .env  # edit server/.env with your values
 npm run dev
 ```
 
-Server runs at `http://localhost:5000`
+Terminal 2 — frontend:
 
-### 2. Frontend setup
-
-```bash
-cd client
-cp .env.example .env
+```powershell
+cd "client"
+npm install
+copy .env.example .env  # edit client/.env if needed (VITE_API_URL)
 npm run dev
 ```
 
-App runs at `http://localhost:5173`
+Default dev ports:
+- Backend: http://localhost:5000
+- Frontend: http://localhost:5173
 
-The Vite dev server proxies `/api` requests to the backend.
+If you prefer Bash (WSL/Git Bash), replace `copy` with `cp`.
 
-## Environment variables
+---
 
-### Server (`server/.env`)
+## 🔐 Environment variables
+
+Server (`server/.env`) — required:
 
 | Variable      | Description                          |
 |---------------|--------------------------------------|
-| PORT          | API port (default: 5000)             |
-| MONGODB_URI   | MongoDB connection string            |
-| JWT_SECRET    | Secret for signing tokens            |
-| JWT_EXPIRE    | Token expiry (e.g. `7d`)             |
-| CLIENT_URL    | Frontend URL for CORS                |
-| ADMIN_SETUP_KEY | Key for registering extra admins   |
+| MONGODB_URI   | MongoDB connection string (Atlas/URI) |
+| JWT_SECRET    | Secret used to sign JWTs              |
+| PORT          | Optional API port (default: 5000)     |
+| JWT_EXPIRE    | Optional token expiry (default: 7d)   |
+| CLIENT_URL    | Optional frontend URL for CORS        |
+| ADMIN_SETUP_KEY | Optional key to allow creating extra admins |
 
-### Client (`client/.env`)
+Client (`client/.env`):
 
-| Variable       | Description                    |
-|----------------|--------------------------------|
-| VITE_API_URL   | API base URL (`/api` or full)  |
+| Variable     | Description                          |
+|--------------|--------------------------------------|
+| VITE_API_URL | API base URL (default: `/api`)       |
 
-## Authentication (Admin)
+---
 
-- **Register:** `POST /api/auth/admin/register` — creates admin user (bcrypt hashed password)
-- **Login:** `POST /api/auth/admin/login` — returns JWT for admin only
-- **Protected routes:** Bearer token via `Authorization` header
-- **CRM APIs:** Require admin role (`adminOnly` middleware)
+## 📦 API & auth notes
+- First admin can be created via `POST /api/auth/admin/register`.
+- Subsequent admin registrations may require `ADMIN_SETUP_KEY` (see `server/.env`).
+- Use `Authorization: Bearer <token>` for protected endpoints.
 
-First admin registration needs no setup key. Additional admins require `ADMIN_SETUP_KEY` in `.env` and the `setupKey` field in the request body.
+Common endpoints (high level):
 
-| Method | Endpoint                   | Auth  | Description           |
-|--------|----------------------------|-------|-----------------------|
-| GET    | /api/health                | No    | Health check          |
-| POST   | /api/auth/admin/register   | No    | Register admin        |
-| POST   | /api/auth/admin/login      | No    | Admin sign in         |
-| GET    | /api/auth/me               | Token | Current user        |
-| POST   | /api/auth/logout           | Token | Logout                |
-| PUT    | /api/auth/profile          | Admin | Update profile        |
-| CRUD   | /api/contacts              | Admin | Contact management    |
-| CRUD   | /api/deals                 | Admin | Deal management       |
-| GET    | /api/deals/stats           | Admin | Pipeline stats        |
+- `POST /api/auth/admin/register` — register admin
+- `POST /api/auth/admin/login` — admin login
+- `GET /api/auth/me` — current admin
+- `CRUD /api/contacts` — contacts
+- `CRUD /api/deals` — deals
+- `GET /api/deals/stats` — pipeline statistics
 
-## Theme
+---
 
-- Sidebar: `#0F172A`
-- Primary: `#2563EB`
-- Background: `#F8FAFC`
-- Cards: white with soft shadows
-- Font: Inter
+## ✅ Recommended workflows
+- Use the frontend to manage leads and open the lead detail panel for follow-up actions.
+- Use the Kanban board to drag leads across pipeline stages.
+- Review `server/src/utils/followUpHelpers.js` and `client/src/api` to extend or customize follow-up automation.
 
-## Scripts
+## 🧾 License & contribution
+- License: ISC (see `server/package.json`)
+- Contributions: open an issue or submit a PR. Keep changes focused and include screenshots for UI tweaks.
 
-| Location | Command       | Description      |
-|----------|---------------|------------------|
-| server   | `npm run dev` | Start API (nodemon) |
-| server   | `npm start`   | Start API (prod) |
-| client   | `npm run dev` | Start frontend   |
-| client   | `npm run build` | Production build |
+---
+
+If you want, I can:
+- add a quick demo GIF in `client/public/` and reference it here,
+- create a `docs/` folder with API examples,
+- or generate a `.env.example` from the current code (server + client).
+
+Would you like any of those next? 
