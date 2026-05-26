@@ -1,14 +1,16 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { Plus } from 'lucide-react';
+import { Plus, CalendarCheck2 } from 'lucide-react';
 import Header from '../components/layout/Header';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import Spinner from '../components/ui/Spinner';
 import Pagination from '../components/ui/Pagination';
 import FollowUpStatCards from '../components/followups/FollowUpStatCards';
 import FollowUpTimeline from '../components/followups/FollowUpTimeline';
 import FollowUpFormModal from '../components/followups/FollowUpFormModal';
+import EmptyState from '../components/ui/EmptyState';
+import Skeleton from '../components/ui/Skeleton';
+import { useToast } from '../hooks/useToast';
 import {
   getFollowUps,
   createFollowUp,
@@ -23,6 +25,7 @@ const PAGE_SIZE = 15;
 
 export default function FollowUps() {
   const { openSidebar } = useOutletContext();
+  const toast = useToast();
   const { stats, refresh: refreshStats } = useFollowUpStats(30000);
   const [items, setItems] = useState([]);
   const [leads, setLeads] = useState([]);
@@ -61,22 +64,37 @@ export default function FollowUps() {
   };
 
   const handleSave = async (payload) => {
-    await createFollowUp(payload);
-    fetchItems(pagination.page);
-    refreshStats();
+    try {
+      await createFollowUp(payload);
+      toast.success('Follow-up task scheduled successfully.');
+      fetchItems(pagination.page);
+      refreshStats();
+    } catch {
+      toast.error('Failed to create follow-up task.');
+    }
   };
 
   const handleComplete = async (id) => {
-    await completeFollowUp(id);
-    fetchItems(pagination.page);
-    refreshStats();
+    try {
+      await completeFollowUp(id);
+      toast.success('Follow-up task completed.');
+      fetchItems(pagination.page);
+      refreshStats();
+    } catch {
+      toast.error('Failed to update task status.');
+    }
   };
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this follow-up?')) return;
-    await deleteFollowUp(id);
-    fetchItems(pagination.page);
-    refreshStats();
+    try {
+      await deleteFollowUp(id);
+      toast.success('Follow-up task removed.');
+      fetchItems(pagination.page);
+      refreshStats();
+    } catch {
+      toast.error('Failed to delete task.');
+    }
   };
 
   return (
@@ -128,9 +146,30 @@ export default function FollowUps() {
             </div>
 
             {loading ? (
-              <div className="flex justify-center py-16">
-                <Spinner />
+              <div className="space-y-6 py-4">
+                <div className="flex gap-4">
+                  <Skeleton variant="circle" className="h-8 w-8 shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton variant="text" className="w-1/4 h-3.5" />
+                    <Skeleton variant="text" className="w-1/2 h-3" />
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <Skeleton variant="circle" className="h-8 w-8 shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton variant="text" className="w-1/3 h-3.5" />
+                    <Skeleton variant="text" className="w-1/2 h-3" />
+                  </div>
+                </div>
               </div>
+            ) : items.length === 0 ? (
+              <EmptyState
+                icon={CalendarCheck2}
+                title="All caught up!"
+                description="No follow-up tasks scheduled for this view. Create a new task to schedule client calls, proposals, or emails."
+                actionLabel="Schedule task"
+                onAction={() => setModalOpen(true)}
+              />
             ) : (
               <>
                 <FollowUpTimeline

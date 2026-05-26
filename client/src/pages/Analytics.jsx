@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import {
   TrendingUp,
@@ -11,8 +11,9 @@ import {
 } from 'lucide-react';
 import Header from '../components/layout/Header';
 import Card, { CardHeader } from '../components/ui/Card';
-import Spinner from '../components/ui/Spinner';
 import Button from '../components/ui/Button';
+import Skeleton, { StatCardSkeleton } from '../components/ui/Skeleton';
+import { useToast } from '../hooks/useToast';
 import { getLeads } from '../api/leads';
 import { getDeals } from '../api/deals';
 import { formatCurrency } from '../utils/formatters';
@@ -95,6 +96,7 @@ const CustomRateTooltip = ({ active, payload, label }) => {
 
 export default function Analytics() {
   const { openSidebar } = useOutletContext();
+  const toast = useToast();
   const [leads, setLeads] = useState([]);
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -105,7 +107,7 @@ export default function Analytics() {
   const [sourceFilter, setSourceFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
 
-  const fetchData = async (silent = false) => {
+  const fetchData = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
     else setRefreshing(true);
 
@@ -116,17 +118,21 @@ export default function Analytics() {
       ]);
       setLeads(leadsRes.data.data || []);
       setDeals(dealsRes.data.data || []);
+      if (silent) {
+        toast.success('Analytics data refreshed.');
+      }
     } catch (err) {
       console.error('Error fetching analytics data:', err);
+      toast.error('Failed to load latest analytics data.');
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  }, [toast]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   // Filtered Leads
   const filteredLeads = useMemo(() => {
@@ -336,8 +342,28 @@ export default function Analytics() {
           </Card>
 
           {loading ? (
-            <div className="flex justify-center py-24">
-              <Spinner className="h-9 w-9" />
+            <div className="space-y-6">
+              {/* KPI Stat Cards Skeleton */}
+              <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <StatCardSkeleton />
+                <StatCardSkeleton />
+                <StatCardSkeleton />
+                <StatCardSkeleton />
+              </section>
+
+              {/* Main Charts Grid Skeleton */}
+              <section className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+                <Card className="lg:col-span-8 space-y-4">
+                  <Skeleton variant="text" className="w-1/4 h-5" />
+                  <Skeleton variant="text" className="w-1/2 h-3.5" />
+                  <Skeleton variant="rect" className="w-full h-80" />
+                </Card>
+                <Card className="lg:col-span-4 space-y-4">
+                  <Skeleton variant="text" className="w-1/3 h-5" />
+                  <Skeleton variant="text" className="w-2/3 h-3.5" />
+                  <Skeleton variant="rect" className="w-full h-80" />
+                </Card>
+              </section>
             </div>
           ) : (
             <>

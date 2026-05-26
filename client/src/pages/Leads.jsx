@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { Plus, Search, Filter, AlertCircle } from 'lucide-react';
+import { Plus, Search, Filter, Users } from 'lucide-react';
 import Header from '../components/layout/Header';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
@@ -9,18 +9,18 @@ import LeadTable from '../components/leads/LeadTable';
 import LeadMobileCards from '../components/leads/LeadMobileCards';
 import LeadFormModal from '../components/leads/LeadFormModal';
 import LeadDetailPanel from '../components/leads/LeadDetailPanel';
+import EmptyState from '../components/ui/EmptyState';
+import { TableRowSkeleton, MobileCardSkeleton } from '../components/ui/Skeleton';
+import { useToast } from '../hooks/useToast';
 import { useFollowUpStats } from '../hooks/useFollowUpStats';
 import { getLeads, createLead, updateLead, deleteLead } from '../api/leads';
 import { emptyLeadForm, leadToForm, STATUS_OPTIONS } from '../utils/leadConstants';
-import { SkeletonTable } from '../components/ui/Skeleton';
-import EmptyState from '../components/ui/EmptyState';
-import { useToast } from '../context/ToastContext';
 
 const PAGE_SIZE = 10;
 
 export default function Leads() {
   const { openSidebar } = useOutletContext();
-  const { toast } = useToast();
+  const toast = useToast();
   const [leads, setLeads] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0, limit: PAGE_SIZE });
   const [loading, setLoading] = useState(true);
@@ -82,14 +82,14 @@ export default function Leads() {
     try {
       if (editingId) {
         await updateLead(editingId, payload);
-        toast('Lead updated successfully', 'success');
+        toast.success('Lead updated successfully.');
       } else {
         await createLead(payload);
-        toast('New lead added to your pipeline', 'success');
+        toast.success('Lead added successfully.');
       }
       fetchLeads(pagination.page);
     } catch {
-      toast('Failed to save lead details', 'error');
+      toast.error('Failed to save lead information.');
     }
   };
 
@@ -97,11 +97,11 @@ export default function Leads() {
     if (!confirm('Delete this lead? This action cannot be undone.')) return;
     try {
       await deleteLead(id);
-      toast('Lead removed successfully', 'success');
+      toast.success('Lead deleted successfully.');
       setSelectedLead(null);
       fetchLeads(pagination.page);
     } catch {
-      toast('Failed to delete lead', 'error');
+      toast.error('Failed to delete lead.');
     }
   };
 
@@ -156,20 +156,38 @@ export default function Leads() {
           </Card>
 
           {loading ? (
-            <SkeletonTable rows={PAGE_SIZE} cols={5} />
+            <Card padding={false}>
+              <div className="hidden md:block">
+                <table className="w-full text-sm">
+                  <thead className="bg-slate-50">
+                    <tr className="border-b border-border text-left text-xs font-medium uppercase tracking-wide text-muted">
+                      <th className="px-5 py-3.5 md:px-6">Lead</th>
+                      <th className="px-5 py-3.5">Company</th>
+                      <th className="px-5 py-3.5">Status</th>
+                      <th className="px-5 py-3.5 text-right md:px-6">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <TableRowSkeleton cols={4} />
+                    <TableRowSkeleton cols={4} />
+                    <TableRowSkeleton cols={4} />
+                  </tbody>
+                </table>
+              </div>
+              <div className="divide-y divide-border md:hidden">
+                <MobileCardSkeleton />
+                <MobileCardSkeleton />
+              </div>
+            </Card>
           ) : (
             <Card padding={false}>
               {leads.length === 0 ? (
                 <EmptyState
-                  title="No leads found"
-                  description={
-                    debouncedSearch || statusFilter !== 'all'
-                      ? 'Try adjusting your search query or dropdown filters to find leads.'
-                      : 'Create your first lead to get started building your pipeline.'
-                  }
-                  icon={AlertCircle}
-                  actionText={!debouncedSearch && statusFilter === 'all' ? 'Add new lead' : undefined}
-                  onAction={!debouncedSearch && statusFilter === 'all' ? openCreate : undefined}
+                  icon={Users}
+                  title={debouncedSearch || statusFilter !== 'all' ? "No leads match criteria" : "No leads found"}
+                  description={debouncedSearch || statusFilter !== 'all' ? "Try adjusting your search query or status filter." : "Add your first client lead to begin tracking conversions."}
+                  actionLabel={(!debouncedSearch && statusFilter === 'all') ? "Add lead" : null}
+                  onAction={openCreate}
                 />
               ) : (
                 <>

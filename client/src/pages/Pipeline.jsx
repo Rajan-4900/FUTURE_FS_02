@@ -6,15 +6,17 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Plus, RefreshCw } from 'lucide-react';
 import Header from '../components/layout/Header';
 import Button from '../components/ui/Button';
-import Spinner from '../components/ui/Spinner';
+import Skeleton from '../components/ui/Skeleton';
 import KanbanBoard from '../components/pipeline/KanbanBoard';
 import LeadFormModal from '../components/leads/LeadFormModal';
 import LeadDetailPanel from '../components/leads/LeadDetailPanel';
+import { useToast } from '../hooks/useToast';
 import { getLeads, updateLeadStatus, createLead, updateLead, deleteLead } from '../api/leads';
 import { emptyLeadForm, leadToForm, normalizeLeadStatus } from '../utils/leadConstants';
 
 export default function Pipeline() {
   const { openSidebar } = useOutletContext();
+  const toast = useToast();
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -33,13 +35,16 @@ export default function Pipeline() {
       setLeads(
         data.data.map((l) => ({ ...l, status: normalizeLeadStatus(l.status) }))
       );
-    } catch (err) {
-      console.error(err);
+      if (silent) {
+        toast.success('Pipeline leads updated.');
+      }
+    } catch {
+      toast.error('Failed to reload pipeline leads.');
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     fetchLeads();
@@ -56,19 +61,26 @@ export default function Pipeline() {
       setLeads((current) =>
         current.map((l) => (l._id === leadId ? data.data : l))
       );
-    } catch (err) {
+      toast.success(`Lead status updated to ${newStatus.replace('_', ' ')}.`);
+    } catch {
       setLeads(previous);
-      console.error(err);
+      toast.error('Failed to update lead status in pipeline.');
     }
   };
 
   const handleSaveLead = async (payload) => {
-    if (editingId) {
-      await updateLead(editingId, payload);
-    } else {
-      await createLead(payload);
+    try {
+      if (editingId) {
+        await updateLead(editingId, payload);
+        toast.success('Lead updated successfully.');
+      } else {
+        await createLead(payload);
+        toast.success('Lead added to pipeline.');
+      }
+      fetchLeads(true);
+    } catch {
+      toast.error('Failed to save lead information.');
     }
-    fetchLeads(true);
   };
 
   const openCreate = () => {
@@ -86,9 +98,14 @@ export default function Pipeline() {
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this lead?')) return;
-    await deleteLead(id);
-    setSelectedLead(null);
-    fetchLeads(true);
+    try {
+      await deleteLead(id);
+      toast.success('Lead successfully deleted.');
+      setSelectedLead(null);
+      fetchLeads(true);
+    } catch {
+      toast.error('Failed to delete lead.');
+    }
   };
 
   return (
@@ -118,8 +135,32 @@ export default function Pipeline() {
       <main className="flex-1 p-4 md:p-6 lg:p-8">
         <div className="mx-auto max-w-[1600px]">
           {loading ? (
-            <div className="flex justify-center py-24">
-              <Spinner className="h-9 w-9" />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {['New', 'Contacted', 'Qualified', 'Proposal'].map((status) => (
+                <div key={status} className="rounded-xl border border-border/60 bg-slate-50/50 p-4 space-y-4">
+                  <div className="flex items-center justify-between border-b border-border/60 pb-3">
+                    <span className="font-semibold text-slate-700 text-sm">{status}</span>
+                    <Skeleton variant="circle" className="h-6 w-6 shrink-0" />
+                  </div>
+                  <div className="space-y-3">
+                    <div className="rounded-xl border border-border/60 bg-white p-4 space-y-3">
+                      <Skeleton variant="text" className="w-1/2 h-3.5" />
+                      <Skeleton variant="text" className="w-3/4 h-2.5" />
+                      <div className="flex gap-1.5 pt-1">
+                        <Skeleton variant="rect" className="w-12 h-5 shrink-0" />
+                        <Skeleton variant="rect" className="w-12 h-5 shrink-0" />
+                      </div>
+                    </div>
+                    <div className="rounded-xl border border-border/60 bg-white p-4 space-y-3">
+                      <Skeleton variant="text" className="w-2/3 h-3.5" />
+                      <Skeleton variant="text" className="w-1/2 h-2.5" />
+                      <div className="flex gap-1.5 pt-1">
+                        <Skeleton variant="rect" className="w-12 h-5 shrink-0" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
             <KanbanBoard

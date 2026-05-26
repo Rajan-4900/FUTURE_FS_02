@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { Plus, Trash2, Pencil, Briefcase } from 'lucide-react';
+import { Plus, Trash2, Pencil, Handshake } from 'lucide-react';
 import Header from '../components/layout/Header';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Badge from '../components/ui/Badge';
+import EmptyState from '../components/ui/EmptyState';
+import { TableRowSkeleton, MobileCardSkeleton } from '../components/ui/Skeleton';
+import { useToast } from '../hooks/useToast';
 import { getDeals, createDeal, updateDeal, deleteDeal } from '../api/deals';
 import { getLeads } from '../api/leads';
 import { formatCurrency, formatDate, STAGE_LABELS } from '../utils/formatters';
-import { SkeletonTable } from '../components/ui/Skeleton';
-import EmptyState from '../components/ui/EmptyState';
-import { useToast } from '../context/ToastContext';
 
 const emptyForm = {
   title: '',
@@ -24,7 +24,7 @@ const emptyForm = {
 
 export default function Deals() {
   const { openSidebar } = useOutletContext();
-  const { toast } = useToast();
+  const toast = useToast();
   const [deals, setDeals] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -81,16 +81,15 @@ export default function Deals() {
     try {
       if (editingId) {
         await updateDeal(editingId, payload);
-        toast('Deal updated successfully', 'success');
+        toast.success('Deal updated successfully.');
       } else {
         await createDeal(payload);
-        toast('New deal opportunity created successfully', 'success');
+        toast.success('Deal added successfully.');
       }
       setModalOpen(false);
       fetchData();
-    } catch (err) {
-      toast('Failed to save deal opportunity', 'error');
-      console.error(err);
+    } catch {
+      toast.error('Failed to save deal information.');
     } finally {
       setSaving(false);
     }
@@ -100,10 +99,10 @@ export default function Deals() {
     if (!confirm('Delete this deal?')) return;
     try {
       await deleteDeal(id);
-      toast('Deal opportunity deleted successfully', 'success');
+      toast.success('Deal deleted successfully.');
       fetchData();
     } catch {
-      toast('Failed to delete deal opportunity', 'error');
+      toast.error('Failed to delete deal.');
     }
   };
 
@@ -123,15 +122,39 @@ export default function Deals() {
 
       <main className="flex-1 p-4 md:p-6">
         {loading ? (
-          <SkeletonTable rows={8} cols={6} />
+          <Card padding={false}>
+            <div className="hidden sm:block">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border text-left text-xs text-muted">
+                    <th className="px-5 py-3 font-medium md:px-6">Deal</th>
+                    <th className="px-5 py-3 font-medium">Value</th>
+                    <th className="px-5 py-3 font-medium hidden sm:table-cell">Contact</th>
+                    <th className="px-5 py-3 font-medium">Stage</th>
+                    <th className="px-5 py-3 font-medium hidden md:table-cell">Close date</th>
+                    <th className="px-5 py-3 font-medium text-right md:px-6">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <TableRowSkeleton cols={6} />
+                  <TableRowSkeleton cols={6} />
+                  <TableRowSkeleton cols={6} />
+                </tbody>
+              </table>
+            </div>
+            <div className="divide-y divide-border sm:hidden">
+              <MobileCardSkeleton />
+              <MobileCardSkeleton />
+            </div>
+          </Card>
         ) : (
-          <Card padding={deals.length === 0}>
+          <Card padding={false}>
             {deals.length === 0 ? (
               <EmptyState
+                icon={Handshake}
                 title="No deals found"
-                description="Keep track of prospective deals, contract values, and closing dates in one convenient workspace."
-                icon={Briefcase}
-                actionText="Create opportunity"
+                description="Create your first business deal to begin tracking sales progress and target goals."
+                actionLabel="Add deal"
                 onAction={openCreate}
               />
             ) : (
@@ -151,86 +174,86 @@ export default function Deals() {
                     </thead>
                     <tbody>
                       {deals.map((d) => (
-                      <tr
-                        key={d._id}
-                        className="border-b border-border last:border-0 hover:bg-slate-50/50"
-                      >
-                        <td className="px-5 py-4 font-medium text-slate-800 md:px-6">
-                          {d.title}
-                        </td>
-                        <td className="px-5 py-4 text-slate-700">{formatCurrency(d.value)}</td>
-                        <td className="px-5 py-4 text-muted hidden sm:table-cell">
-                          {d.contact?.name || '—'}
-                        </td>
-                        <td className="px-5 py-4">
-                          <Badge status={d.stage}>{STAGE_LABELS[d.stage]}</Badge>
-                        </td>
-                        <td className="px-5 py-4 text-muted hidden md:table-cell">
-                          {formatDate(d.expectedCloseDate)}
-                        </td>
-                        <td className="px-5 py-4 text-right md:px-6">
-                          <div className="flex justify-end gap-1">
-                            <button
-                              onClick={() => openEdit(d)}
-                              className="rounded-lg p-2 text-muted hover:bg-slate-100 hover:text-slate-700"
-                            >
-                              <Pencil size={16} />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(d._id)}
-                              className="rounded-lg p-2 text-muted hover:bg-red-50 hover:text-red-600"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
+                        <tr
+                          key={d._id}
+                          className="border-b border-border last:border-0 hover:bg-slate-50/50"
+                        >
+                          <td className="px-5 py-4 font-medium text-slate-800 md:px-6">
+                            {d.title}
+                          </td>
+                          <td className="px-5 py-4 text-slate-700">{formatCurrency(d.value)}</td>
+                          <td className="px-5 py-4 text-muted hidden sm:table-cell">
+                            {d.contact?.name || '—'}
+                          </td>
+                          <td className="px-5 py-4">
+                            <Badge status={d.stage}>{STAGE_LABELS[d.stage]}</Badge>
+                          </td>
+                          <td className="px-5 py-4 text-muted hidden md:table-cell">
+                            {formatDate(d.expectedCloseDate)}
+                          </td>
+                          <td className="px-5 py-4 text-right md:px-6">
+                            <div className="flex justify-end gap-1">
+                              <button
+                                onClick={() => openEdit(d)}
+                                className="rounded-lg p-2 text-muted hover:bg-slate-100 hover:text-slate-700"
+                              >
+                                <Pencil size={16} />
+                              </button>
+                              <button
+                                onClick={() => handleDelete(d._id)}
+                                className="rounded-lg p-2 text-muted hover:bg-red-50 hover:text-red-600"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
 
-            {/* Mobile Stacked Card View */}
-            <div className="block sm:hidden divide-y divide-border">
-              {deals.map((d) => (
-                  <div key={d._id} className="p-4 space-y-3 hover:bg-slate-50/50 transition-colors duration-150">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <h4 className="font-semibold text-slate-800 text-sm">{d.title}</h4>
-                        <p className="text-xs text-muted mt-0.5">Contact: {d.contact?.name || '—'}</p>
-                      </div>
-                      <Badge status={d.stage}>{STAGE_LABELS[d.stage]}</Badge>
-                    </div>
-                    <div className="flex items-center justify-between text-xs pt-1">
-                      <div>
-                        <span className="text-slate-500">Value: </span>
-                        <span className="font-bold text-slate-800">{formatCurrency(d.value)}</span>
-                      </div>
-                      {d.expectedCloseDate && (
-                        <div className="text-slate-500">
-                          Close: <span className="font-medium">{formatDate(d.expectedCloseDate)}</span>
+                {/* Mobile Stacked Card View */}
+                <div className="block sm:hidden divide-y divide-border">
+                  {deals.map((d) => (
+                    <div key={d._id} className="p-4 space-y-3 hover:bg-slate-50/50 transition-colors duration-150">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <h4 className="font-semibold text-slate-800 text-sm">{d.title}</h4>
+                          <p className="text-xs text-muted mt-0.5">Contact: {d.contact?.name || '—'}</p>
                         </div>
-                      )}
+                        <Badge status={d.stage}>{STAGE_LABELS[d.stage]}</Badge>
+                      </div>
+                      <div className="flex items-center justify-between text-xs pt-1">
+                        <div>
+                          <span className="text-slate-500">Value: </span>
+                          <span className="font-bold text-slate-800">{formatCurrency(d.value)}</span>
+                        </div>
+                        {d.expectedCloseDate && (
+                          <div className="text-slate-500">
+                            Close: <span className="font-medium">{formatDate(d.expectedCloseDate)}</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex justify-end gap-2 border-t border-border/60 pt-3 mt-2">
+                        <button
+                          onClick={() => openEdit(d)}
+                          className="flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 touch-manipulation"
+                        >
+                          <Pencil size={14} />
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(d._id)}
+                          className="flex items-center gap-1 rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 touch-manipulation"
+                        >
+                          <Trash2 size={14} />
+                          Delete
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex justify-end gap-2 border-t border-border/60 pt-3 mt-2">
-                      <button
-                        onClick={() => openEdit(d)}
-                        className="flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 touch-manipulation"
-                      >
-                        <Pencil size={14} />
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(d._id)}
-                        className="flex items-center gap-1 rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 touch-manipulation"
-                      >
-                        <Trash2 size={14} />
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
-            </div>
+                  ))}
+                </div>
               </>
             )}
           </Card>

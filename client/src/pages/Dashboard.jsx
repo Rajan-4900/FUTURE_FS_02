@@ -15,7 +15,7 @@ import RecentActivity from '../components/dashboard/RecentActivity';
 import PipelineBar from '../components/dashboard/PipelineBar';
 import Card, { CardHeader } from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import Spinner from '../components/ui/Spinner';
+import Skeleton, { StatCardSkeleton } from '../components/ui/Skeleton';
 import { getLeads } from '../api/leads';
 import { getDeals, getDealStats } from '../api/deals';
 import { formatCurrency } from '../utils/formatters';
@@ -65,14 +65,38 @@ export default function Dashboard() {
 
       <main className="flex-1 p-4 md:p-6 lg:p-8">
         {loading ? (
-          <div className="flex justify-center py-24">
-            <Spinner className="h-9 w-9" />
+          <div className="mx-auto max-w-7xl space-y-6 lg:space-y-8">
+            <section aria-label="Key metrics">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <StatCardSkeleton />
+                <StatCardSkeleton />
+                <StatCardSkeleton />
+                <StatCardSkeleton />
+              </div>
+            </section>
+
+            <section className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
+              <Card className="lg:col-span-5 space-y-4">
+                <Skeleton variant="text" className="w-1/3 h-5" />
+                <Skeleton variant="text" className="w-2/3 h-4" />
+                <div className="space-y-3 pt-2">
+                  <div className="flex justify-between"><Skeleton variant="text" className="w-1/4 h-3.5" /><Skeleton variant="text" className="w-10 h-3.5" /></div>
+                  <div className="flex justify-between"><Skeleton variant="text" className="w-1/3 h-3.5" /><Skeleton variant="text" className="w-8 h-3.5" /></div>
+                  <div className="flex justify-between"><Skeleton variant="text" className="w-1/4 h-3.5" /><Skeleton variant="text" className="w-12 h-3.5" /></div>
+                </div>
+              </Card>
+              <Card className="lg:col-span-7 space-y-4">
+                <Skeleton variant="text" className="w-1/4 h-5" />
+                <Skeleton variant="text" className="w-1/2 h-4" />
+                <Skeleton variant="rect" className="w-full h-32" />
+              </Card>
+            </section>
           </div>
         ) : (
           <div className="mx-auto max-w-7xl space-y-6 lg:space-y-8">
             {/* Stat cards — responsive grid */}
             <section aria-label="Key metrics">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 stagger-children">
                 <StatCard
                   label="Total leads"
                   value={leadStats.totalLeads}
@@ -196,13 +220,13 @@ function QuickAction({ to, title, description }) {
   return (
     <Link
       to={to}
-      className="flex items-center justify-between rounded-lg border border-border px-4 py-3.5 transition-colors duration-150 hover:border-slate-300 hover:bg-slate-50"
+      className="group flex items-center justify-between rounded-lg border border-border px-4 py-3.5 transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 hover:-translate-y-px hover:shadow-sm"
     >
       <div>
-        <p className="text-sm font-medium text-slate-800">{title}</p>
+        <p className="text-sm font-medium text-slate-800 group-hover:text-slate-900">{title}</p>
         <p className="text-xs text-muted">{description}</p>
       </div>
-      <ArrowRight size={16} className="shrink-0 text-muted" />
+      <ArrowRight size={16} className="shrink-0 text-muted transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-primary" />
     </Link>
   );
 }

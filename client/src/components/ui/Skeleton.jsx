@@ -1,101 +1,78 @@
-export default function Skeleton({ className = '' }) {
-  return <div className={`shimmer-loader rounded-md ${className}`} />;
+export default function Skeleton({
+  variant = 'rect',
+  className = '',
+  ...props
+}) {
+  const baseClass = 'animate-pulse bg-slate-200/80 rounded';
+  const variantClasses = {
+    circle: 'rounded-full',
+    rect: 'rounded-xl',
+    text: 'h-4 w-3/4 rounded-sm',
+  };
+
+  return (
+    <div
+      className={`${baseClass} ${variantClasses[variant]} ${className}`}
+      {...props}
+    />
+  );
 }
 
-export function SkeletonMetricsGrid({ count = 4 }) {
+export function StatCardSkeleton() {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {Array.from({ length: count }).map((_, i) => (
-        <div
-          key={i}
-          className="rounded-xl border border-border/60 bg-white p-5 card-shadow flex items-center justify-between gap-4"
-        >
-          <div className="space-y-2 flex-1">
-            <Skeleton className="h-3 w-1/3" />
-            <Skeleton className="h-7 w-2/3" />
-            <Skeleton className="h-3 w-1/2" />
-          </div>
-          <Skeleton className="h-11 w-11 rounded-xl shrink-0" />
+    <div className="rounded-xl border border-border/60 bg-surface p-5 card-shadow">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1 space-y-3">
+          <Skeleton variant="text" className="w-1/2 h-3.5" />
+          <Skeleton variant="text" className="w-1/3 h-7" />
+          <Skeleton variant="text" className="w-2/3 h-3" />
         </div>
-      ))}
+        <Skeleton variant="circle" className="h-11 w-11 shrink-0" />
+      </div>
     </div>
   );
 }
 
-export function SkeletonTable({ rows = 5, cols = 5 }) {
+export function TableRowSkeleton({ cols = 5 }) {
   return (
-    <div className="w-full overflow-hidden border border-border/50 rounded-xl bg-white card-shadow">
-      <div className="border-b border-border bg-slate-50/50 px-6 py-4 flex gap-4">
-        {Array.from({ length: cols }).map((_, i) => (
-          <Skeleton key={i} className={`h-4 ${i === 0 ? 'w-1/4' : 'w-1/6'}`} />
-        ))}
-      </div>
-      <div className="divide-y divide-border px-6">
-        {Array.from({ length: rows }).map((_, r) => (
-          <div key={r} className="py-4 flex gap-4 items-center">
-            {Array.from({ length: cols }).map((_, c) => (
-              <div key={c} className={`flex-1 ${c === 0 ? 'flex items-center gap-3' : ''}`}>
-                {c === 0 && <Skeleton className="h-9 w-9 rounded-full shrink-0" />}
-                <Skeleton className={`h-3.5 ${c === 0 ? 'w-2/3' : 'w-1/2'}`} />
+    <tr className="border-b border-border last:border-0">
+      {Array.from({ length: cols }).map((_, i) => (
+        <td key={i} className="px-5 py-4">
+          {i === 0 ? (
+            <div className="flex items-center gap-3">
+              <Skeleton variant="circle" className="h-9 w-9 shrink-0" />
+              <div className="space-y-1.5 flex-1 min-w-0">
+                <Skeleton variant="text" className="w-24 h-3.5" />
+                <Skeleton variant="text" className="w-32 h-2.5" />
               </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-export function SkeletonChart() {
-  return (
-    <div className="rounded-xl border border-border/60 bg-white p-6 card-shadow space-y-4">
-      <div className="flex justify-between items-start">
-        <div className="space-y-1.5 flex-1">
-          <Skeleton className="h-4.5 w-1/4" />
-          <Skeleton className="h-3.5 w-1/3" />
-        </div>
-        <Skeleton className="h-8 w-24 rounded-lg" />
-      </div>
-      <div className="h-64 flex items-end gap-3 pt-6 border-b border-slate-100 pb-2">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <Skeleton
-            key={i}
-            className="flex-1 rounded-t"
-            style={{
-              height: `${Math.max(15, Math.floor(Math.random() * 85))}%`,
-            }}
-          />
-        ))}
-      </div>
-      <div className="flex justify-between text-xs text-slate-300">
-        <Skeleton className="h-3 w-12" />
-        <Skeleton className="h-3 w-12" />
-        <Skeleton className="h-3 w-12" />
-        <Skeleton className="h-3 w-12" />
-      </div>
-    </div>
-  );
-}
-
-export function SkeletonTimeline() {
-  return (
-    <div className="space-y-5">
-      {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="flex gap-4">
-          <div className="flex flex-col items-center">
-            <Skeleton className="h-8 w-8 rounded-full shrink-0" />
-            {i < 3 && <div className="w-0.5 grow bg-slate-100 mt-2" />}
-          </div>
-          <div className="flex-1 space-y-2 pt-1 pb-4">
-            <div className="flex justify-between">
-              <Skeleton className="h-3.5 w-1/4" />
-              <Skeleton className="h-3 w-16" />
             </div>
-            <Skeleton className="h-3 w-1/2" />
-            <Skeleton className="h-3 w-2/3" />
+          ) : (
+            <Skeleton variant="text" className={`h-3 ${i === cols - 1 ? 'w-12 ml-auto' : 'w-20'}`} />
+          )}
+        </td>
+      ))}
+    </tr>
+  );
+}
+
+export function MobileCardSkeleton() {
+  return (
+    <div className="p-4 space-y-4">
+      <div className="flex items-start gap-3">
+        <Skeleton variant="circle" className="h-9 w-9 shrink-0" />
+        <div className="space-y-2 flex-1 min-w-0">
+          <Skeleton variant="text" className="w-24 h-4" />
+          <Skeleton variant="text" className="w-32 h-3" />
+          <div className="flex gap-1.5 pt-1">
+            <Skeleton variant="rect" className="w-14 h-5" />
+            <Skeleton variant="rect" className="w-14 h-5" />
           </div>
         </div>
-      ))}
+      </div>
+      <div className="flex justify-end gap-2 border-t border-border/60 pt-3">
+        <Skeleton variant="rect" className="w-16 h-7" />
+        <Skeleton variant="rect" className="w-16 h-7" />
+      </div>
     </div>
   );
 }
