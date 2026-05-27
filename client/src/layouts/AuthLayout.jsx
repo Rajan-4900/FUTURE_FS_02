@@ -4,6 +4,9 @@ export default function AuthLayout() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-10 sm:px-6">
       <div className="mb-8 text-center">
+        <div className="mb-3 flex justify-center">
+          <img src="/logo.svg" alt="Future CRM logo" className="h-10 w-10 rounded-xl" />
+        </div>
         <p className="text-sm font-medium text-slate-500">Future CRM</p>
         <p className="mt-1 text-xs text-muted">Admin workspace</p>
       </div>

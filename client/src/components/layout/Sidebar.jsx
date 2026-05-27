@@ -24,9 +24,11 @@ export default function Sidebar({ onNavigate, onClose }) {
     <aside className="flex h-full w-64 flex-col bg-sidebar text-slate-300">
       <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-700/50 px-5">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white shadow-sm">
-            F
-          </div>
+          <img
+            src="/logo.svg"
+            alt="Future CRM logo"
+            className="h-8 w-8 rounded-lg shadow-sm"
+          />
           <div>
             <p className="text-sm font-semibold text-white tracking-tight">Future CRM</p>
             <p className="text-[11px] text-slate-500">Admin panel</p>
