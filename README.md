@@ -1,8 +1,10 @@
-# Future CRM
+# 🚀 Future CRM
+
+![License](https://img.shields.io/badge/license-ISC-blue.svg) ![Node](https://img.shields.io/badge/node-%3E%3D16-brightgreen.svg)
 
 Production-oriented MERN CRM for admin teams to manage lead pipelines, deals, and follow-up reminders with a modern SaaS dashboard experience.
 
-## Overview
+## 🔍 Overview
 
 Future CRM is a full-stack web application built with React + Vite on the frontend and Node.js + Express + MongoDB on the backend.  
 The application is admin-first and includes:
@@ -13,7 +15,7 @@ The application is admin-first and includes:
 - Deal tracking and dashboard statistics
 - Follow-up reminder and timeline system with overdue alerts
 
-## Core Features
+## ✨ Core Features
 
 - **Authentication**
   - Admin registration and login
@@ -37,7 +39,7 @@ The application is admin-first and includes:
   - KPI cards and lead/deal summaries
   - Recent activity feed
 
-## Technology Stack
+## 🛠️ Technology Stack
 
 - **Frontend:** React 19, Vite, Tailwind CSS, React Router, Axios
 - **UI/UX:** Lucide icons, Framer Motion, React DnD
@@ -45,7 +47,7 @@ The application is admin-first and includes:
 - **Security:** bcrypt password hashing, JWT auth, middleware route guards
 - **Database:** MongoDB (Atlas/local)
 
-## Project Structure
+## 📁 Project Structure
 
 ```text
 FUTURE_FS_02/
@@ -71,7 +73,7 @@ FUTURE_FS_02/
 └── README.md
 ```
 
-## Local Development Setup
+## ⚙️ Local Development Setup
 
 Use two terminals.
 
@@ -100,7 +102,7 @@ Default URLs:
 
 If you use Bash/WSL, replace `copy` with `cp`.
 
-## Environment Variables
+## 🔑 Environment Variables
 
 ### Server (`server/.env`)
 
@@ -119,7 +121,7 @@ If you use Bash/WSL, replace `copy` with `cp`.
 |---|---|---|
 | `VITE_API_URL` | No | API base URL (default `/api`) |
 
-## API Summary
+## 📡 API Summary
 
 ### Authentication
 - `POST /api/auth/admin/register`
@@ -153,7 +155,7 @@ If you use Bash/WSL, replace `copy` with `cp`.
 - `DELETE /api/deals/:id`
 - `GET /api/deals/stats`
 
-## Production Notes
+## 🚦 Production Notes
 
 - Use strong secrets for `JWT_SECRET` and `ADMIN_SETUP_KEY`
 - Restrict MongoDB Atlas network access appropriately
@@ -161,7 +163,7 @@ If you use Bash/WSL, replace `copy` with `cp`.
 - Serve client and API via HTTPS in production
 - Add centralized logging and request tracing for server diagnostics
 
-## Troubleshooting
+## 🩺 Troubleshooting
 
 - **Atlas connection error / IP whitelist issue**  
   Add your current public IP in MongoDB Atlas Network Access.
@@ -172,7 +174,7 @@ If you use Bash/WSL, replace `copy` with `cp`.
 - **Follow-up lead select empty**  
   Ensure at least one lead exists and API is reachable.
 
-## Scripts
+## 🧩 Scripts
 
 ### Server
 - `npm run dev` — start with nodemon
@@ -183,6 +185,6 @@ If you use Bash/WSL, replace `copy` with `cp`.
 - `npm run build` — production build
 - `npm run preview` — preview production build locally
 
-## License
+## 📜 License
 
 ISC
