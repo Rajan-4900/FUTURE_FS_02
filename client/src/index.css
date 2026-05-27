@@ -55,6 +55,24 @@
 }
 
 @layer utilities {
+  .icon-shell {
+    @apply inline-flex items-center justify-center rounded-lg border border-border/70 bg-slate-50 text-slate-500;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+  }
+
+  .icon-shell-sm {
+    @apply h-8 w-8;
+  }
+
+  .icon-shell-md {
+    @apply h-10 w-10;
+  }
+
+  .icon-shell-dark {
+    @apply border-slate-700/70 bg-slate-800/70 text-slate-300;
+    box-shadow: none;
+  }
+
   .card-shadow {
     box-shadow:
       0 1px 3px 0 rgb(0 0 0 / 0.04),

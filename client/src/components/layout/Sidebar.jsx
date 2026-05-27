@@ -69,7 +69,9 @@ export default function Sidebar({ onNavigate, onClose }) {
                 {isActive && (
                   <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-primary" />
                 )}
-                <Icon size={18} strokeWidth={1.75} />
+                <span className="icon-shell icon-shell-sm icon-shell-dark">
+                  <Icon size={15} strokeWidth={2} />
+                </span>
                 <span className="flex-1">{label}</span>
                 {badge === 'overdue' && <FollowUpBadge count={stats.overdue} />}
               </>
@@ -93,7 +95,9 @@ export default function Sidebar({ onNavigate, onClose }) {
           onClick={() => logout()}
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-400 transition-all duration-200 hover:bg-slate-800/50 hover:text-slate-200"
         >
-          <LogOut size={18} strokeWidth={1.75} />
+          <span className="icon-shell icon-shell-sm icon-shell-dark">
+            <LogOut size={15} strokeWidth={2} />
+          </span>
           Sign out
         </button>
       </div>

@@ -7,10 +7,10 @@ export default function Header({ title, subtitle, onMenuClick, action }) {
         <button
           type="button"
           onClick={onMenuClick}
-          className="rounded-lg p-2 text-slate-600 transition-colors duration-150 hover:bg-slate-100 lg:hidden"
+          className="icon-shell icon-shell-sm text-slate-600 transition-colors duration-150 hover:bg-slate-100 lg:hidden"
           aria-label="Open menu"
         >
-          <Menu size={20} strokeWidth={1.75} />
+          <Menu size={16} strokeWidth={2} />
         </button>
         <div className="min-w-0">
           <h1 className="truncate text-lg font-semibold tracking-tight text-slate-900">

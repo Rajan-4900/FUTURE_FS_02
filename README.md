@@ -1,108 +1,188 @@
-# 🚀 Future CRM — Sales & Follow-ups Platform
+# Future CRM
 
-A polished full-stack CRM and pipeline management app with a clean SaaS-style dashboard. Designed for lead management, deals, and follow-ups with role-based admin authentication.
+Production-oriented MERN CRM for admin teams to manage lead pipelines, deals, and follow-up reminders with a modern SaaS dashboard experience.
 
-### Quick overview
-- 🔧 Frontend: React + Vite + Tailwind CSS
-- ⚙️ Backend: Node.js + Express 5 + Mongoose (MongoDB)
-- 🔐 Auth: JWT-based admin authentication
-- 🧩 Purpose: Manage leads, deals, contacts, and follow-up timelines
+## Overview
 
----
+Future CRM is a full-stack web application built with React + Vite on the frontend and Node.js + Express + MongoDB on the backend.  
+The application is admin-first and includes:
 
-## ✨ Highlights
-- Clean, component-driven React UI with dashboard widgets and Kanban pipeline components
-- API-first Express server with modular controllers, middleware, and Mongoose models
-- Built-in follow-up tools and timeline UI to keep leads moving through the pipeline
+- JWT authentication and protected admin routes
+- Lead management with filtering, pagination, and detail panels
+- Drag-and-drop Kanban pipeline
+- Deal tracking and dashboard statistics
+- Follow-up reminder and timeline system with overdue alerts
 
-## 🧭 Project structure
+## Core Features
 
-```
+- **Authentication**
+  - Admin registration and login
+  - JWT token-based authorization
+  - Role-protected APIs
+- **Leads**
+  - Create, edit, delete, and inspect lead records
+  - Search + status filtering + pagination
+  - Responsive table (desktop) and cards (mobile)
+- **Pipeline**
+  - Four-stage Kanban board: New, Contacted, Proposal Sent, Converted
+  - Drag-and-drop status updates with optimistic UI
+- **Deals**
+  - CRUD operations for opportunities linked to leads
+  - Pipeline value and stage distribution support
+- **Follow-ups**
+  - Add follow-up notes and reminders
+  - Timeline history per lead and global follow-up view
+  - Overdue and due-today indicators with navigation badge
+- **Dashboard**
+  - KPI cards and lead/deal summaries
+  - Recent activity feed
+
+## Technology Stack
+
+- **Frontend:** React 19, Vite, Tailwind CSS, React Router, Axios
+- **UI/UX:** Lucide icons, Framer Motion, React DnD
+- **Backend:** Node.js, Express 5, Mongoose, express-validator
+- **Security:** bcrypt password hashing, JWT auth, middleware route guards
+- **Database:** MongoDB (Atlas/local)
+
+## Project Structure
+
+```text
 FUTURE_FS_02/
-├── client/                 # React + Vite frontend (UI, pages, hooks, api)
-├── server/                 # Express API (controllers, models, routes)
-└── README.md               # You are here
+├── client/
+│   ├── public/                 # logo, favicon, static assets
+│   └── src/
+│       ├── api/                # API clients (axios modules)
+│       ├── components/         # UI + feature components
+│       ├── context/            # Auth context
+│       ├── hooks/              # reusable hooks
+│       ├── layouts/            # app/auth layouts
+│       ├── pages/              # route pages
+│       ├── routes/             # protected/public routing
+│       └── utils/              # constants, formatters, helpers
+├── server/
+│   └── src/
+│       ├── config/             # DB connection
+│       ├── controllers/        # route handlers
+│       ├── middleware/         # auth, validation, errors
+│       ├── models/             # Mongoose schemas
+│       ├── routes/             # API routes
+│       └── utils/              # shared server helpers
+└── README.md
 ```
 
-## 🛠️ Tech stack
-- React 19, Vite, Tailwind CSS
-- Node.js, Express 5, Mongoose
-- JWT for auth, Axios for client API calls
-- Dev tools: ESLint (client), Nodemon (server)
+## Local Development Setup
 
----
+Use two terminals.
 
-## ⚡ Quick start (development)
-Open two terminals.
-
-Terminal 1 — backend:
+### 1) Backend
 
 ```powershell
 cd "server"
 npm install
-copy .env.example .env  # edit server/.env with your values
+copy .env.example .env
 npm run dev
 ```
 
-Terminal 2 — frontend:
+### 2) Frontend
 
 ```powershell
 cd "client"
 npm install
-copy .env.example .env  # edit client/.env if needed (VITE_API_URL)
+copy .env.example .env
 npm run dev
 ```
 
-Default dev ports:
-- Backend: http://localhost:5000
-- Frontend: http://localhost:5173
+Default URLs:
+- Frontend: [http://localhost:5173](http://localhost:5173)
+- Backend: [http://localhost:5000](http://localhost:5000)
+- Health check: [http://localhost:5000/api/health](http://localhost:5000/api/health)
 
-If you prefer Bash (WSL/Git Bash), replace `copy` with `cp`.
+If you use Bash/WSL, replace `copy` with `cp`.
 
----
+## Environment Variables
 
-## 🔐 Environment variables
+### Server (`server/.env`)
 
-Server (`server/.env`) — required:
+| Variable | Required | Description |
+|---|---|---|
+| `MONGODB_URI` | Yes | MongoDB connection string |
+| `JWT_SECRET` | Yes | JWT signing secret |
+| `PORT` | No | API port (default `5000`) |
+| `JWT_EXPIRE` | No | Token expiry (default `7d`) |
+| `CLIENT_URL` | No | CORS origin (default `http://localhost:5173`) |
+| `ADMIN_SETUP_KEY` | No | Required for additional admin registration after initial setup |
 
-| Variable      | Description                          |
-|---------------|--------------------------------------|
-| MONGODB_URI   | MongoDB connection string (Atlas/URI) |
-| JWT_SECRET    | Secret used to sign JWTs              |
-| PORT          | Optional API port (default: 5000)     |
-| JWT_EXPIRE    | Optional token expiry (default: 7d)   |
-| CLIENT_URL    | Optional frontend URL for CORS        |
-| ADMIN_SETUP_KEY | Optional key to allow creating extra admins |
+### Client (`client/.env`)
 
-Client (`client/.env`):
+| Variable | Required | Description |
+|---|---|---|
+| `VITE_API_URL` | No | API base URL (default `/api`) |
 
-| Variable     | Description                          |
-|--------------|--------------------------------------|
-| VITE_API_URL | API base URL (default: `/api`)       |
+## API Summary
 
----
+### Authentication
+- `POST /api/auth/admin/register`
+- `POST /api/auth/admin/login`
+- `GET /api/auth/me`
+- `POST /api/auth/logout`
+- `PUT /api/auth/profile`
 
-## 📦 API & auth notes
-- First admin can be created via `POST /api/auth/admin/register`.
-- Subsequent admin registrations may require `ADMIN_SETUP_KEY` (see `server/.env`).
-- Use `Authorization: Bearer <token>` for protected endpoints.
+### Leads
+- `GET /api/leads`
+- `GET /api/leads/:id`
+- `POST /api/leads`
+- `PUT /api/leads/:id`
+- `PATCH /api/leads/:id/status`
+- `DELETE /api/leads/:id`
 
-Common endpoints (high level):
+### Follow-ups
+- `GET /api/follow-ups`
+- `GET /api/follow-ups/stats`
+- `GET /api/follow-ups/timeline`
+- `POST /api/follow-ups`
+- `PUT /api/follow-ups/:id`
+- `PATCH /api/follow-ups/:id/complete`
+- `DELETE /api/follow-ups/:id`
 
-- `POST /api/auth/admin/register` — register admin
-- `POST /api/auth/admin/login` — admin login
-- `GET /api/auth/me` — current admin
-- `CRUD /api/contacts` — contacts
-- `CRUD /api/deals` — deals
-- `GET /api/deals/stats` — pipeline statistics
+### Deals
+- `GET /api/deals`
+- `GET /api/deals/:id`
+- `POST /api/deals`
+- `PUT /api/deals/:id`
+- `DELETE /api/deals/:id`
+- `GET /api/deals/stats`
 
----
+## Production Notes
 
-## ✅ Recommended workflows
-- Use the frontend to manage leads and open the lead detail panel for follow-up actions.
-- Use the Kanban board to drag leads across pipeline stages.
-- Review `server/src/utils/followUpHelpers.js` and `client/src/api` to extend or customize follow-up automation.
+- Use strong secrets for `JWT_SECRET` and `ADMIN_SETUP_KEY`
+- Restrict MongoDB Atlas network access appropriately
+- Keep CORS origin locked to your deployed frontend domain
+- Serve client and API via HTTPS in production
+- Add centralized logging and request tracing for server diagnostics
 
-## 🧾 License & contribution
-- License: ISC (see `server/package.json`)
-- Contributions: open an issue or submit a PR. Keep changes focused and include screenshots for UI tweaks.
+## Troubleshooting
+
+- **Atlas connection error / IP whitelist issue**  
+  Add your current public IP in MongoDB Atlas Network Access.
+- **Token/auth failures**  
+  Verify `JWT_SECRET` and token expiration settings.
+- **Favicon not updating**  
+  Hard refresh browser (`Ctrl + Shift + R`) and reopen tab.
+- **Follow-up lead select empty**  
+  Ensure at least one lead exists and API is reachable.
+
+## Scripts
+
+### Server
+- `npm run dev` — start with nodemon
+- `npm start` — start production-style process
+
+### Client
+- `npm run dev` — start Vite dev server
+- `npm run build` — production build
+- `npm run preview` — preview production build locally
+
+## License
+
+ISC

@@ -19,9 +19,9 @@ export default function StatCard({ label, value, change, icon: Icon, trend, acce
         </div>
         {Icon && (
           <div
-            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-all duration-200 ${accentStyles[accent]}`}
+            className={`icon-shell icon-shell-md shrink-0 rounded-xl transition-all duration-200 ${accentStyles[accent]}`}
           >
-            <Icon size={20} strokeWidth={1.75} />
+            <Icon size={18} strokeWidth={2} />
           </div>
         )}
       </div>
