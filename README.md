@@ -106,12 +106,3 @@ Common endpoints (high level):
 ## 🧾 License & contribution
 - License: ISC (see `server/package.json`)
 - Contributions: open an issue or submit a PR. Keep changes focused and include screenshots for UI tweaks.
-
----
-
-If you want, I can:
-- add a quick demo GIF in `client/public/` and reference it here,
-- create a `docs/` folder with API examples,
-- or generate a `.env.example` from the current code (server + client).
-
-Would you like any of those next? 
