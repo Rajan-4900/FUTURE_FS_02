@@ -16,13 +16,11 @@ export const validateName = (name) => {
   return '';
 };
 
-import { getApiBaseUrl } from './apiBaseUrl';
-
 export const getApiError = (error, fallback = 'Something went wrong') => {
   if (!error?.response) {
     if (error?.code === 'ERR_NETWORK' || error?.message === 'Network Error') {
       if (import.meta.env.PROD) {
-        return `Cannot reach the API (${getApiBaseUrl()}). On Vercel, set API_URL to your Render backend (e.g. https://your-app.onrender.com/api), redeploy, and confirm Render /api/health works.`;
+        return `Cannot reach the API. On Vercel set API_URL to your Render URL (…/api), delete VITE_API_URL, redeploy, then open ${window.location.origin}/api/health — it must return JSON.`;
       }
       return 'Cannot reach the server. Open a terminal in the server folder and run: npm run dev';
     }
