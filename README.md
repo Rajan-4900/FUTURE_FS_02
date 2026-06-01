@@ -119,7 +119,15 @@ If you use Bash/WSL, replace `copy` with `cp`.
 
 | Variable | Required | Description |
 |---|---|---|
-| `VITE_API_URL` | No | API base URL (default `/api`) |
+| `VITE_API_URL` | No | API base URL (default `/api`; local dev uses Vite proxy) |
+
+### Vercel (production frontend)
+
+| Variable | Required | Description |
+|---|---|---|
+| `API_URL` | **Yes** | Render API root, e.g. `https://your-app.onrender.com/api` (used by Edge middleware to proxy `/api`) |
+
+After changing `API_URL`, **redeploy** the Vercel project.
 
 ## 📡 API Summary
 
@@ -165,6 +173,8 @@ If you use Bash/WSL, replace `copy` with `cp`.
 
 ## 🩺 Troubleshooting
 
+- **Vercel login/register: “Cannot reach the API”**  
+  Set `API_URL` on Vercel to your live Render URL (`https://…onrender.com/api`), redeploy, and open `https://your-app.onrender.com/api/health` in the browser — it must return JSON, not HTML.
 - **Atlas connection error / IP whitelist issue**  
   Add your current public IP in MongoDB Atlas Network Access.
 - **Token/auth failures**  
