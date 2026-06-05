@@ -100,6 +100,13 @@ Default URLs:
 - Backend: [http://localhost:5000](http://localhost:5000)
 - Health check: [http://localhost:5000/api/health](http://localhost:5000/api/health)
 
+### Quick VS Code task
+
+You can run both dev servers in parallel via the VS Code Tasks panel:
+
+- Open Command Palette -> `Tasks: Run Task` -> `Dev: Run client + server`.
+
+
 If you use Bash/WSL, replace `copy` with `cp`.
 
 ## 🔑 Environment Variables
