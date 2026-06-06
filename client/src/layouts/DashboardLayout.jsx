@@ -13,7 +13,7 @@ export default function DashboardLayout() {
   }, [sidebarOpen]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[var(--color-background)]">
       {/* Sticky desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 lg:block">
         <Sidebar />

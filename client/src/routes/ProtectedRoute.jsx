@@ -8,18 +8,18 @@ export default function ProtectedRoute() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-background)]">
         <Spinner />
       </div>
     );
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/" state={{ from: location }} replace />;
   }
 
   if (!isAdmin) {
-    return <Navigate to="/login" state={{ message: 'Admin access required' }} replace />;
+    return <Navigate to="/" state={{ message: 'Admin access required' }} replace />;
   }
 
   return <Outlet />;

@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Persist Admin",
+    "email": "persist@example.com",
+    "password": "$2b$12$tCc.S4rxdKyIStNWHe/hou/4Yo5QamYH2SHiFpM.7U5co3e04nzqC",
+    "role": "admin",
+    "company": "PCo",
+    "avatar": "",
+    "_id": "6a230d9ab36709c535e2dcb6",
+    "createdAt": "2026-06-05T17:55:39.019Z",
+    "updatedAt": "2026-06-05T17:55:39.019Z",
+    "__v": 0
+  }
+]

@@ -7,7 +7,7 @@ export default function PublicRoute() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-background)]">
         <Spinner />
       </div>
     );
@@ -18,7 +18,7 @@ export default function PublicRoute() {
   }
 
   if (isAuthenticated && !isAdmin) {
-    return <Navigate to="/login" state={{ message: 'Administrator access only' }} replace />;
+    return <Navigate to="/" state={{ message: 'Administrator access only' }} replace />;
   }
 
   return <Outlet />;

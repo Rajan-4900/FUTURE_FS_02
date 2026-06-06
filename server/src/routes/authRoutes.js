@@ -7,6 +7,7 @@ import {
   logout,
   getSetupStatus,
   updateProfile,
+  debugUsers,
 } from '../controllers/authController.js';
 import { protect, adminOnly } from '../middleware/authMiddleware.js';
 import { validate } from '../middleware/validateMiddleware.js';
@@ -32,5 +33,7 @@ router.post('/admin/login', loginRules, loginAdmin);
 router.get('/me', protect, getMe);
 router.post('/logout', protect, logout);
 router.put('/profile', adminOnly, updateProfile);
+// Dev-only debug route
+router.get('/debug-users', debugUsers);
 
 export default router;

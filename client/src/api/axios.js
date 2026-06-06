@@ -20,14 +20,11 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const isAuthPage = ['/login', '/register'].some((p) =>
-      window.location.pathname.startsWith(p)
-    );
-
-    if (error.response?.status === 401 && !isAuthPage) {
-      authStorage.clear();
-      window.location.href = '/login';
-    }
+      // On 401 clear session and send user to the dashboard (login removed)
+      if (error.response?.status === 401) {
+        authStorage.clear();
+        window.location.href = '/';
+      }
 
     return Promise.reject(error);
   }
