@@ -15,11 +15,11 @@ export default function ProtectedRoute() {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (!isAdmin) {
-    return <Navigate to="/" state={{ message: 'Admin access required' }} replace />;
+    return <Navigate to="/login" state={{ message: 'Admin access required' }} replace />;
   }
 
   return <Outlet />;

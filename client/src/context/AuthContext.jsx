@@ -1,99 +1,50 @@
-import { createContext, useState, useEffect, useCallback } from 'react';
-import { loginAdmin, registerAdmin, getMe, logout as logoutApi } from '../api/auth';
-import { authStorage } from '../utils/authStorage';
+import { createContext, useState, useCallback } from 'react';
 
 export const AuthContext = createContext(null);
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => authStorage.getUser());
-  const [loading, setLoading] = useState(true);
+const MOCK_USER = {
+  id: '6a230d9ab36709c535e2dcb6',
+  name: 'Admin User',
+  email: 'admin@example.com',
+  role: 'admin',
+  company: 'Future CRM',
+};
 
-  const setAuth = useCallback((token, userData) => {
-    authStorage.setAuth(token, userData);
-    setUser(userData);
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(MOCK_USER);
+
+  const login = useCallback(async () => {
+    return { token: 'mock_token', user: MOCK_USER };
+  }, []);
+
+  const register = useCallback(async () => {
+    return { token: 'mock_token', user: MOCK_USER };
   }, []);
 
   const logout = useCallback(async () => {
-    try {
-      if (authStorage.getToken()) await logoutApi();
-    } catch {
-      // Clear local session even if API call fails
-    } finally {
-      authStorage.clear();
-      setUser(null);
-    }
+    // No-op
   }, []);
 
-  const login = async (credentials) => {
-    const { data } = await loginAdmin(credentials);
-    if (data.user.role !== 'admin') {
-      authStorage.clear();
-      throw new Error('Admin access required');
-    }
-    setAuth(data.token, data.user);
-    return data;
-  };
-
-  const register = async (userData) => {
-    const { data } = await registerAdmin(userData);
-    setAuth(data.token, data.user);
-    return data;
-  };
-
-  const updateUser = (userData) => {
-    authStorage.setUser(userData);
-    setUser(userData);
-  };
+  const updateUser = useCallback((userData) => {
+    setUser((prev) => ({ ...prev, ...userData }));
+  }, []);
 
   const refreshUser = useCallback(async () => {
-    const { data } = await getMe();
-    if (data.user.role !== 'admin') {
-      await logout();
-      return;
-    }
-    authStorage.setUser(data.user);
-    setUser(data.user);
-  }, [logout]);
-
-  useEffect(() => {
-    const token = authStorage.getToken();
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-
-    getMe()
-      .then(({ data }) => {
-        if (data.user.role !== 'admin') {
-          authStorage.clear();
-          setUser(null);
-          return;
-        }
-        authStorage.setUser(data.user);
-        setUser(data.user);
-      })
-      .catch(() => {
-        authStorage.clear();
-        setUser(null);
-      })
-      .finally(() => setLoading(false));
+    // No-op
   }, []);
-
-  const isAuthenticated = !!user && !!authStorage.getToken();
-  const isAdmin = user?.role === 'admin';
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        loading,
+        loading: false,
         login,
         register,
         logout,
         updateUser,
         refreshUser,
-        isAuthenticated,
-        isAdmin,
+        isAuthenticated: true,
+        isAdmin: true,
       }}
     >
       {children}

